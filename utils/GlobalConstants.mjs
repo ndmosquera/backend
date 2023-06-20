@@ -1,0 +1,6 @@
+export const PRODUCT_TITLE = 'title'
+export const PRODUCT_DESCRIPTION = 'description'
+export const PRODUCT_PRICE = 'price'
+export const PRODUCT_THUMBNAIL = 'thumbnail'
+export const PRODUCT_CODE = 'code'
+export const PRODUCT_STOCK = 'stock'
