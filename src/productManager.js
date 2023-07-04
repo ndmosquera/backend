@@ -1,11 +1,12 @@
-import * as con from './utils/GlobalConstants.mjs';
+import * as con from '../utils/GlobalConstants.mjs';
 import fs from 'fs/promises';
 
-class ProductManager {
+export default class ProductManager {
     constructor(path=con.PATH_PRODUCTS_FILE) {
       this.path = path;
       this.products = [];
       this.nextId = 1;
+      this.loadFile()
     };
 
     async loadFile() {
@@ -23,7 +24,7 @@ class ProductManager {
 
     async saveFile() {
         try{
-            await fs.writeFile(this.path, JSON.stringify(this.products))
+            await fs.writeFile(this.path, JSON.stringify(this.products, null, 2), 'utf-8')
         } catch(e){
             console.error('Error saving file products:', e)
         }
@@ -35,7 +36,7 @@ class ProductManager {
             ...productData
         };
 
-        if(!product[con.PRODUCT_TITLE] || !product[con.PRODUCT_DESCRIPTION] || !product[con.PRODUCT_PRICE] || 
+        if(!product[con.PRODUCT_TITLE] || !product[con.PRODUCT_DESCRIPTION] || !product[con.PRODUCT_PRICE] ||
             !product[con.PRODUCT_THUMBNAIL] || !product[con.PRODUCT_CODE] || !product[con.PRODUCT_STOCK]){
             console.error('All fields are required');
             return;
@@ -52,7 +53,7 @@ class ProductManager {
         console.log('Product added successfully');
     }
 
-    getProducts(){
+    async getProducts(){
         return this.products;
     }
 
@@ -92,49 +93,49 @@ class ProductManager {
 }
 
 
-const product1 = {
-    title: "Product 1",
-    description: "Description 1",
-    price: 10.99,
-    thumbnail: "path/to/image1.jpg",
-    code: "P1",
-    stock: 100,
-  };
+// const product1 = {
+//     title: "Product 1",
+//     description: "Description 1",
+//     price: 10.99,
+//     thumbnail: "path/to/image1.jpg",
+//     code: "P1",
+//     stock: 100,
+//   };
 
-  const product2 = {
-    title: "Product 2",
-    description: "Description 2",
-    price: 19.99,
-    thumbnail: "path/to/image2.jpg",
-    code: "P2",
-    stock: 50,
-  };
+//   const product2 = {
+//     title: "Product 2",
+//     description: "Description 2",
+//     price: 19.99,
+//     thumbnail: "path/to/image2.jpg",
+//     code: "P2",
+//     stock: 50,
+//   };
 
-const productManager = new ProductManager();
-const products = productManager.getProducts();
+// const productManager = new ProductManager();
+// const products = productManager.getProducts();
 
-console.log("------Validacion 1: Array vacio------")
-console.log(products)
-console.log("------Validacion 2: Añadir producto------")
-await productManager.addProduct(product1);
-console.log("------Validacion 3: Obtener productos------")
-console.log(products)
-console.log("------Validacion 4: Añadir producto existente------")
-await productManager.addProduct(product1);
-console.log("------Validacion 5: Añadir nuevo producto (ID diferente)------")
-await productManager.addProduct(product2);
-console.log("------Validacion 6: Obtener productos------")
-console.log(products)
-console.log("------Validacion 7: Obtener producto por ID existente------")
-const productID = productManager.getProductById(2);
-console.log(productID)
-console.log("------Validacion 7: Obtener producto por ID No existente------")
-const productIDN = productManager.getProductById(22);
-console.log("------Validacion 8: Actualizar Producto------")
-const updateProduct2 = {
-    title: "Product 2.1",
-    price: 59.99,
-  };
-await productManager.updateProduct(2, updateProduct2);
-console.log("------Validacion 9: Eliminar Producto------")
-await productManager.deleteProduct(1);
+// console.log("------Validacion 1: Array vacio------")
+// console.log(products)
+// console.log("------Validacion 2: Añadir producto------")
+// await productManager.addProduct(product1);
+// console.log("------Validacion 3: Obtener productos------")
+// console.log(products)
+// console.log("------Validacion 4: Añadir producto existente------")
+// await productManager.addProduct(product1);
+// console.log("------Validacion 5: Añadir nuevo producto (ID diferente)------")
+// await productManager.addProduct(product2);
+// console.log("------Validacion 6: Obtener productos------")
+// console.log(products)
+// console.log("------Validacion 7: Obtener producto por ID existente------")
+// const productID = productManager.getProductById(2);
+// console.log(productID)
+// console.log("------Validacion 7: Obtener producto por ID No existente------")
+// const productIDN = productManager.getProductById(22);
+// console.log("------Validacion 8: Actualizar Producto------")
+// const updateProduct2 = {
+//     title: "Product 2.1",
+//     price: 59.99,
+//   };
+// await productManager.updateProduct(2, updateProduct2);
+// console.log("------Validacion 9: Eliminar Producto------")
+// await productManager.deleteProduct(1);
