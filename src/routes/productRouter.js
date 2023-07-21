@@ -10,7 +10,7 @@ const productRouter = Router();
 
 productRouter.get('/', async (req, res) => {
     try{
-        const products = await manager.getProducts();
+        const products = manager.getProducts();
         const { limit } = req.query
         res.status(200).send(
             limit
@@ -24,9 +24,11 @@ productRouter.get('/', async (req, res) => {
 
 productRouter.post('/', async (req, res) => {
     const body = req.body;
+    const io = req.io;
     try{
         const result = await manager.addProduct(body);
-        res.status(200).send(result);
+        io.emit('productCreated', result)
+        res.status(200).send('Product added successfully');
     }catch (e){
         if(e.message.includes('All fields are required') || e.message.includes('already exists')){
             res.status(400).send({ error : true, message : e.message});
@@ -70,6 +72,8 @@ productRouter.delete('/:pid', async (req, res) => {
     try{
         const { pid } = req.params;
         const result = await manager.deleteProduct(Number(pid));
+        const io = req.io;
+        io.emit('productDeleted', pid)
         res.status(200).send(result);
     }catch (e){
         if(e.message.includes("Not found")){

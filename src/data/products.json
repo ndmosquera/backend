@@ -64,15 +64,5 @@
     "thumbnail": [
       "path/to/image5.jpg"
     ]
-  },
-  {
-    "id": 6,
-    "title": "Product 6",
-    "description": "Description 6",
-    "code": "P6",
-    "status": false,
-    "price": 59.99,
-    "stock": 35,
-    "category": "Category1"
   }
 ]

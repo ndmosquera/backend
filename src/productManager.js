@@ -31,6 +31,11 @@ export default class ProductManager {
     }
 
     async addProduct(productData) {
+        
+        if(con.PRODUCT_ID in productData){
+            delete productData[con.PRODUCT_ID];
+        }
+
         const product = {
             [con.PRODUCT_ID]: this.nextId,
             ...productData
@@ -47,13 +52,12 @@ export default class ProductManager {
 
         if(this.products.some((p) => p[con.PRODUCT_CODE] === product[con.PRODUCT_CODE])){
             throw new Error(`Product with ${con.PRODUCT_CODE}:${product[con.PRODUCT_CODE]} already exists`);
-
         }
 
         this.products.push(product);
         this.nextId++;
         await this.saveFile();
-        return 'Product added successfully';
+        return product;
     }
 
     getProducts(){
@@ -70,6 +74,17 @@ export default class ProductManager {
     }
 
     async updateProduct(id, updatedFields) {
+        if(con.PRODUCT_ID in updatedFields){
+            throw new Error("You can not update an ID product")
+        }
+        
+        if(con.PRODUCT_CODE in updatedFields){
+            
+            if(this.products.some((p) => p[con.PRODUCT_CODE] === updatedFields[con.PRODUCT_CODE])){
+                throw new Error(`Product with ${con.PRODUCT_CODE}:${updatedFields[con.PRODUCT_CODE]} already exists`);
+            }
+        }
+        
         const productIndex = this.products.findIndex(product => product[con.PRODUCT_ID] === id);
         if(productIndex !== -1){
             const product = this.products[productIndex];
@@ -91,6 +106,15 @@ export default class ProductManager {
             this.products = this.products.filter(item => item[con.PRODUCT_ID] !== id);
             await this.saveFile();
             return 'Product deleted successfully';
+        }
+    }
+
+    getProductByCode(code){
+        const product = this.products.find(item => item[con.PRODUCT_CODE] === code);
+        if(product){
+            return product;
+        } else {
+            throw new Error(`Not found a product with ${con.PRODUCT_CODE} = ${code}`)
         }
     }
 }

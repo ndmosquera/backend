@@ -1,0 +1,54 @@
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/socket.js"></script>
+<style>
+    .products-container {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .product{
+        border: 1px solid black;
+        margin-left: 10px;
+    }
+
+    h2{
+        text-align: center;
+    }
+
+    li{
+        margin-top: 5px;
+        margin-right: 10px;
+    }
+</style>
+
+
+<div>
+    <h2>Lista de productos</h2>
+    <div id="products" class="products-container">
+        {{#each products}}
+        <ul id="{{this.id}}" class="product">
+            <li>
+                <b>Nombre:</b> {{this.title}} 
+            </li>
+                <li>
+                <b>Descripción:</b> {{this.description}}
+            </li>
+                <li>
+                <b>Codigo:</b> {{this.code}}
+            </li>
+                <li>
+                <b>Precio:</b> {{this.price}}
+            </li>
+                <li>
+                <b>Estatus:</b> {{this.status}}
+            </li>
+                <li>
+                <b>Stock:</b> {{this.stock}}
+            </li>
+                <li>
+                <b>Categoria:</b> {{this.category}}
+            </li>
+        </ul>
+        {{/each}}
+    </div>
+</div>
