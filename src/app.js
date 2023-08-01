@@ -5,6 +5,11 @@ import handlebars from 'express-handlebars'
 import __dirname from "./dirname.js"; 
 import productViewsRouter from "./routes/viewsRouter.js";
 import { Server } from "socket.io";
+import mongoose from "mongoose";
+import * as con from '../utils/GlobalConstants.mjs'
+
+const conn = mongoose.connect(`mongodb+srv://${con.USERNAME_DB}:${con.PASSWORD_DB}@codercluster.hhamevg.mongodb.net/coder?retryWrites=true&w=majority`)
+conn.then(() => console.log('connected'))
 
 const app = express();
 

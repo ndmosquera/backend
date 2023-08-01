@@ -18,7 +18,7 @@ productViewsRouter.get('/', async (req, res) => {
     }
 });
 
-productViewsRouter.get('/realtimeoroducts', async (req, res) => {
+productViewsRouter.get('/realtimeproducts', async (req, res) => {
     try{
         const products = manager.getProducts(); 
         res.render('realTimeProducts', {products: products})

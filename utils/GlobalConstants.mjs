@@ -18,3 +18,11 @@ export const PATH_PRODUCTS_FILE = './src/data/products.json'
 export const PATH_CARTS_FILE = './src/data/carts.json'
 export const PATH_USERS_FILE = './src/data/users.json'
 
+
+// Models
+export const PRODUCTS = 'products'
+
+
+// Config
+export const USERNAME_DB = 'ndmosquera'
+export const PASSWORD_DB = '@%p5t$v34AWfQ'
