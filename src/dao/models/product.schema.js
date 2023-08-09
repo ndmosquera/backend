@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import * as con from "../utils/GlobalConstants.mjs"
+import * as con from "../../../utils/GlobalConstants.mjs"
 
 const productSchema = new mongoose.Schema({
     [con.PRODUCT_TITLE]: {
@@ -36,4 +36,4 @@ const productSchema = new mongoose.Schema({
 
 const productModel = mongoose.model(con.PRODUCTS, productSchema)
 
-export default productModel;
+export default productModel; 

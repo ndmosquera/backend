@@ -7,22 +7,31 @@ export const PRODUCT_STATUS = 'status'
 export const PRODUCT_STOCK = 'stock'
 export const PRODUCT_CATEGORY = 'category'
 export const PRODUCT_THUMBNAIL = 'thumbnail'
-export const PRODUCT_ID = 'id'
+export const ID = '_id'
 
 // Carts fields
-export const CART_ID = 'id'
-export const CART_PRODUCTS = 'products'
+export const PRODUCTS = 'products'
 export const QUANTITY = "quantity"
+
+export const USER = 'user'
 
 export const PATH_PRODUCTS_FILE = './src/data/products.json'
 export const PATH_CARTS_FILE = './src/data/carts.json'
 export const PATH_USERS_FILE = './src/data/users.json'
 
 
+// DATABASE
+export const DATA = 'data'
+export const STATUS = 'status'
+export const OK = 'ok'
+export const MSG = 'message'
+export const ERROR = 'error'
+
 // Models
-export const PRODUCTS = 'products'
+export const CARTS = 'carts'
+export const MESSAGES = 'messages'
 
 
 // Config
 export const USERNAME_DB = 'ndmosquera'
-export const PASSWORD_DB = '@%p5t$v34AWfQ'
+export const PASSWORD_DB = 'a1O3Si9fFpl6JJ58'
