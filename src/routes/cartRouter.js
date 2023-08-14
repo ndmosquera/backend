@@ -1,5 +1,5 @@
 import { Router } from 'express'
-
+import mongoose from 'mongoose';
 import * as con from '../../utils/GlobalConstants.mjs'
 import CartManager from '../dao/MongoDB/cartManager.js';
 
@@ -41,8 +41,7 @@ cartRouter.get('/:cid', async (req, res) => {
 
 cartRouter.post('/:cid/product/:pid', async (req, res) => {
     try{
-        const { cid } = req.params;
-        const { pid } = req.params;
+        const { cid, pid } = req.params;
         const result = await manager.addToCart(cid, pid);
         res.status(200).send({
             [con.DATA] : result,
@@ -55,6 +54,61 @@ cartRouter.post('/:cid/product/:pid', async (req, res) => {
             [con.MSG] : e.message
         })
     }
+});
+
+cartRouter.delete('/:cid/product/:pid', async (req, res) => {
+    try{
+        const { cid, pid } = req.params;
+        const result = await manager.deleteProductFromCart(cid, pid);
+        res.status(200).send({
+            [con.DATA] : result,
+            [con.STATUS] : con.OK,
+            [con.MSG] : 'Product deleted from cart successfully'
+        });
+    }catch (e){
+        res.status(502).send({
+            [con.STATUS] : con.ERROR,
+            [con.MSG] : e.message
+        })
+    }
 })
+
+cartRouter.put('/:cid/product/:pid', async (req, res) => {
+    try{
+        const { cid, pid } = req.params;
+        const { quantity } = req.body;
+        const result = await manager.addQuantityProduct(cid, pid, quantity);
+        res.status(200).send({
+            [con.DATA] : result,
+            [con.STATUS] : con.OK,
+            [con.MSG] : 'Product quantity updated successfully'
+        });
+    }catch (e){
+        res.status(502).send({
+            [con.STATUS] : con.ERROR,
+            [con.MSG] : e.message
+        })
+    }
+});
+
+cartRouter.delete('/:cid', async (req, res) => {
+    try {
+        const { cid } = req.params;
+        
+        const result = await manager.removeAllProducts(cid);
+        
+        res.status(200).send({
+            [con.DATA]: result,
+            [con.STATUS]: con.OK,
+            [con.MSG]: 'All products removed from cart successfully'
+        });
+    } catch (e) {
+        res.status(502).send({
+            [con.STATUS]: con.ERROR,
+            [con.MSG]: e.message
+        });
+    }
+});
+
 
 export default cartRouter

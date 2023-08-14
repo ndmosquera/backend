@@ -11,8 +11,9 @@ const productViewsRouter = Router();
 
 productViewsRouter.get('/', async (req, res) => {
     try{
-        const products = await productManager.getProducts();
-        const productsObjects = products.map(product => product.toObject());
+        const { limit=10, page=1, query=undefined, sort=undefined } = req.query
+        const products = await productManager.getProducts(limit, page, query, sort);
+        const productsObjects = products.docs.map(product => product.toObject());
         res.render('home', {products: productsObjects})
     } catch (e){
         res.status(502).send({error : true, message : e.message})

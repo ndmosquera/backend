@@ -35,8 +35,19 @@ export default class ProductManager {
         return newProduct;
     }
 
-    async getProducts(){
-        const products = await productModel.find()
+    async getProducts(limit, page, query, sort){
+        const filter = {};
+        if (query) {
+            filter[{$or: [
+                { [con.PRODUCT_CATEGORY]: query },
+                { [con.PRODUCT_STATUS]: query }
+            ]}] 
+        }
+        const products = await productModel.paginate( 
+            filter,  
+            {limit, page,
+            sort: sort === "desc" ? "-price" : sort === "asc" ? "price" : undefined}
+        )
         return products
     }
 

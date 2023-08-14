@@ -26,7 +26,6 @@ function createMessage(msg) {
   </div>`;
 }
 
-// createMessage({message: "hola", user: 'ndmosquera'})
 
 // function createOwnMessage(msg) {
 //         return `<div class="chat-message">

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import moongosePaginate from 'mongoose-paginate-v2'
 import * as con from "../../../utils/GlobalConstants.mjs"
 
 const productSchema = new mongoose.Schema({
@@ -33,6 +34,8 @@ const productSchema = new mongoose.Schema({
         type: String
         }
 })
+
+productSchema.plugin(moongosePaginate)
 
 const productModel = mongoose.model(con.PRODUCTS, productSchema)
 

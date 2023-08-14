@@ -5,20 +5,20 @@ import * as con from '../../utils/GlobalConstants.mjs'
 const manager = new ProductManager();
 
 
-
+  
 const productRouter = Router();
 
 productRouter.get('/', async (req, res) => {
     try{
-        const products = await manager.getProducts();
+        const { limit=10, page=1, query=undefined, sort=undefined } = req.query
+        const products = await manager.getProducts(limit, page, query, sort);
+        const data = products.docs;
+        delete products.docs;
         console.log(products)
-        const { limit } = req.query
         res.status(200).send(
-            limit
-            ? {[con.DATA] : products.slice(0, limit),
-                [con.STATUS] : con.OK}
-            : {[con.DATA] : products,
-                [con.STATUS] : con.OK}
+            {[con.DATA] : data,
+              ...products,
+             [con.STATUS] : con.OK}
             );
     } catch (e){
         res.status(502).send({[con.STATUS] : con.ERROR, [con.MSG] : e.message})
