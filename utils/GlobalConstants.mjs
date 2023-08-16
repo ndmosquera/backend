@@ -13,6 +13,15 @@ export const ID = '_id'
 export const PRODUCTS = 'products'
 export const QUANTITY = "quantity"
 
+// User fields
+export const NAME = "name"
+export const LAST_NAME = "last_name"
+export const USERNAME = "username"
+export const PASSWORD = "password"
+export const AVATAR = "avatar"
+export const SALT = "salt"
+
+
 export const USER = 'user'
 
 export const PATH_PRODUCTS_FILE = './src/data/products.json'
@@ -30,6 +39,7 @@ export const ERROR = 'error'
 // Models
 export const CARTS = 'carts'
 export const MESSAGES = 'messages'
+export const USERS = 'users'
 
 
 // Config

@@ -1,0 +1,63 @@
+<style>
+header {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.product-details {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem;
+}
+
+.product-image img {
+  max-width: 100%;
+  height: auto;
+}
+
+.product-info {
+  margin-left: 2rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+p {
+  margin: 0.5rem 0;
+}
+
+.add-to-cart-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 1rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.3s ease;
+}
+
+.add-to-cart-btn:hover {
+  background-color: #0056b3;
+}
+</style>
+
+<header>
+<h1>Detalle de Producto</h1>
+</header>
+<main class="product-details">
+<div class="product-info">
+    <h2>Nombre: {{ title }}</h2>
+    <p>Descripción: {{ description }}</p>
+    <p>Precio: ${{ price }}</p>
+    <p>Categoría: {{ category }}</p>
+    <form action="/cart/add" method="POST">
+        <input type="hidden" name="productId" value="{{_id}}">
+        <button class="add-to-cart-btn" type="submit">Añadir al Carrito</button>
+    </form>
+</div>
+</main>

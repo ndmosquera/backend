@@ -10,8 +10,8 @@ const productRouter = Router();
 
 productRouter.get('/', async (req, res) => {
     try{
-        const { limit=10, page=1, query=undefined, sort=undefined } = req.query
-        const products = await manager.getProducts(limit, page, query, sort);
+        const parameters = req.query
+        const products = await manager.getProducts(parameters);
         const data = products.docs;
         delete products.docs;
         console.log(products)

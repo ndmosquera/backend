@@ -1,26 +1,70 @@
-{{#each products}}
-<ul>
-    <li>
-        <b>Nombre:</b> {{this.title}} 
-    </li>
-        <li>
-        <b>Descripción:</b> {{this.description}}
-    </li>
-        <li>
-        <b>Codigo:</b> {{this.code}}
-    </li>
-        <li>
-        <b>Precio:</b> {{this.price}}
-    </li>
-        <li>
-        <b>Estatus:</b> {{this.status}}
-    </li>
-        <li>
-        <b>Stock:</b> {{this.stock}}
-    </li>
-        <li>
-        <b>Categoria:</b> {{this.category}}
-    </li>
-</ul>
-{{/each}}
+        <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+        }
+        li h2 {
+            margin: 0;
+        }
+        p {
+            margin: 5px 0;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
 
+    <div class="container">
+        <h1>Lista de Productos</h1>
+        <p>Página {{currentPage}} de {{totalPages}}</p>
+        <ul>
+            {{#each products}}
+            <li>
+                <div>
+                    <h2>{{title}}</h2>
+                    <p>Precio: ${{price}}</p>
+                    <p>Categoría: {{category}}</p>
+                    <a href="/products/{{_id}}">Ver Detalles</a>
+                    <form action="/cart/add" method="POST">
+                        <input type="hidden" name="productId" value="{{_id}}">
+                        <button type="submit">Añadir al Carrito</button>
+                    </form>
+                </div>
+            </li>
+            {{/each}}
+        </ul>
+    </div>

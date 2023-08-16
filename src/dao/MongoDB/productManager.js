@@ -35,19 +35,27 @@ export default class ProductManager {
         return newProduct;
     }
 
-    async getProducts(limit, page, query, sort){
+    async getProducts(parameters){
+        const { limit=10, page=1, query=undefined, sort=undefined } = parameters
         const filter = {};
         if (query) {
-            filter[{$or: [
-                { [con.PRODUCT_CATEGORY]: query },
-                { [con.PRODUCT_STATUS]: query }
-            ]}] 
+            const queries = query.split(",");
+            queries.forEach(q => {
+                const [key, value] = q.split(":");
+                filter[key] = value;
+            })
         }
+
         const products = await productModel.paginate( 
             filter,  
             {limit, page,
             sort: sort === "desc" ? "-price" : sort === "asc" ? "price" : undefined}
         )
+
+        const parsedPage = parseInt(page);
+        if (isNaN(parsedPage) || parsedPage <= 0 || parsedPage > products.totalPages) {
+            throw new Error(`${page} is not a valid page`);
+        }
         return products
     }
 

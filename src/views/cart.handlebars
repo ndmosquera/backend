@@ -1,0 +1,66 @@
+<style>
+.container {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.cart-items {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 20px auto;
+    max-width: 1200px;
+}
+
+.cart-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px;
+    width: calc(33.33% - 20px); /* Mostrar tres elementos por fila */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.cart-item h2 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.cart-item p {
+    margin: 5px 0;
+}
+
+.total {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.total h2 {
+    font-size: 24px;
+}
+</style>
+
+
+<div class="container">
+    <h1>Carrito</h1>
+    <div class="cart-items">
+        {{#each cart}}
+            <div class="cart-item">
+                <h2>{{_id.title}}</h2>
+                <p>Precio: {{_id.price}}</p>
+                <p>Cantidad: {{quantity}}</p>
+            </div>
+        {{/each}}
+    </div>
+    <div class="total">
+        <h2>Total: {{totalPrice}}</h2>
+    </div>
+</div>

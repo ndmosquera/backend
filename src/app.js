@@ -12,8 +12,10 @@ import cookieParser from "cookie-parser";
 // const messagesManager = new MessagesManager()
 import * as con from '../utils/GlobalConstants.mjs'
 import session from "express-session";
+import MongoStore from "connect-mongo";
 
-export const conn = await mongoose.connect(`mongodb+srv://${con.USERNAME_DB}:${con.PASSWORD_DB}@codercluster.hhamevg.mongodb.net/ecommerce?retryWrites=true&w=majority`)
+const mongoURL = `mongodb+srv://${con.USERNAME_DB}:${con.PASSWORD_DB}@codercluster.hhamevg.mongodb.net/ecommerce?retryWrites=true&w=majority`
+export const conn = await mongoose.connect(mongoURL)
 
 const app = express();
 
@@ -29,10 +31,12 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(session({
   secret: "sd21df56156dgf1h35fd4651zxc",
-
-
   resave: true,
-  saveUninitialized: true
+  saveUninitialized: true,
+  store: new MongoStore({
+    mongoUrl: mongoURL,
+    ttl: 30
+  })
 }))
 
 app.use(express.static(`${__dirname}/public`))

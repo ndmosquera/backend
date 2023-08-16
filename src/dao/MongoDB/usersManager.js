@@ -1,6 +1,6 @@
 import fs from 'fs'
 import crypto from 'crypto'
-import * as con from './utils/GlobalConstants.mjs';
+import * as con from '../../../utils/GlobalConstants.mjs';
 
 class UserManager {
     constructor() {
