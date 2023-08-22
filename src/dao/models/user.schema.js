@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import * as con from "../../../utils/GlobalConstants.mjs"
 
-const schema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   [con.NAME]: {
     type: String,
     required: true,
@@ -14,6 +14,10 @@ const schema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  [con.EMAIL]: {
+    type: String,
+    required: true,
+  },
   [con.PASSWORD]: {
     type: String,
     required: true,
@@ -21,13 +25,13 @@ const schema = new mongoose.Schema({
   [con.AVATAR]: {
     type: String,
   },
-  [con.SALT]: {
+  [con.ROLE]: {
     type: String,
-    required: true,
+    enum: [con.ADMIN, con.USER],
+    default: con.USER
   }
 });
 
+const userModel = mongoose.model(con.USERS, userSchema);
 
-
-const UserModel = mongoose.model("user", schema);
-export default UserModel;
+export default userModel;

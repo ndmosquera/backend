@@ -73,7 +73,7 @@ export default class CartManager {
             { arrayFilters: [{ [`elem.${con.ID}`]: pid }], new: true }
         );
         if (!cart) {
-            throw new Error(`Not found a cart with ${con.ID} = ${id}`);
+            throw new Error(`Not found a cart with ${con.ID} = ${cid}`);
         }
         const productIndex = cart.products.findIndex(product => product[con.ID].toString() === pid);
         if (productIndex === -1) {
@@ -93,6 +93,31 @@ export default class CartManager {
             throw new Error(`Not found a cart with ${con.ID} = ${cid}`);
         }
         return cart;
+    }
+
+    async updateAllCart(cid, productsArray) {
+        const cart = await cartModel.findById(cid);
+        if (!cart) {
+            throw new Error(`Cart with ID ${cid} not found`);
+        }
+        const errors = [];
+        for (const productItem of productsArray) {
+            try {
+                const productIndex = cart.products.findIndex(product => product[con.ID].toString() === productItem[con.ID]);
+                if (productIndex === -1) {
+                    await this.addToCart(cid, productItem[con.ID]);    
+                }
+                await this.addQuantityProduct(cid, productItem[con.ID], productItem[con.QUANTITY]);
+            } catch (e) {
+                errors.push(e);
+                continue
+            }
+        }
+        const result = {[con.DATA]: await this.getCartById(cid),
+                        [con.STATUS]: errors.length !== 0 ? [con.SOME_ERRORS] : [con.OK], 
+                        [con.MSG]: errors.length !== 0 ? errors : 'Cart updated successfully'
+        }
+        return result;
     }
 }
 

@@ -1,61 +1,51 @@
-import fs from 'fs'
-import crypto from 'crypto'
+import userModel from '../models/user.schema.js';
 import * as con from '../../../utils/GlobalConstants.mjs';
+import bcrypt from 'bcrypt'
 
 class UserManager {
-    constructor() {
-
-    }
+    constructor() {}
 
     async getUsers(){
-        try{
-            const data = await fs.promises.readFile(con.PATH_USERS_FILE, 'utf-8');
-            const users = JSON.parse(data);
-            return users;
-        } catch(e){
-            await fs.promises.writeFile(con.PATH_USERS_FILE, JSON.stringify([]));
-            return [];
-        }
+        const users = await userModel.find();
+        return users
     }
 
     async createUser(user) {
-        const users = await this.getUsers();
-        
-        user.salt = crypto.randomBytes(128).toString('base64');
-        user.password = crypto.createHmac('sha256', user.salt).update(user.password).digest('hex');
+        const salt = await bcrypt.genSalt(10)
+        user[con.PASSWORD] =  await bcrypt.hash(user[con.PASSWORD], salt)
+        const newUser  = await userModel.create(user);
+        return newUser.toObject();
+    }
 
-        users.push(user)
-        await fs.promises.writeFile(con.PATH_USERS_FILE, JSON.stringify(users));
+    async getUserByUsername(username){
+        return await userModel.findOne({ username })
     }
 
     async validateUser(username, password){
-        const users = await this.getUsers();
+        const user = await this.getUserByUsername(username);
+        if(!user){
+            return false;
+        }
 
-        const user = users.find(user => user.username === username)
-        if(!user) return 'Error, usuario no existe'
+        const isEqual = await bcrypt.compare(password, user[con.PASSWORD])
 
-        const loginHash = crypto
-        .createHmac('sha256', user.salt)
-        .update(password)
-        .digest('hex');
-
-        return loginHash === user.password
-        ? 'Usuario Loggeado'
-        : 'Usuario o Contraseña incorrecta';
-
+        return isEqual
+        ? user.toObject()
+        : false
     }
+
+    async recoverUserPassword(username, password){
+        const user = await this.getUserByUsername(username);
+        if(!user) return false;
+
+        const salt = await bcrypt.genSalt(10)
+        user[con.PASSWORD] =  await bcrypt.hash(password, salt)
+        await user.save()
+        return {[con.STATUS]: con.OK}
+    }
+
+
+
 }
 
-
-const users = new UserManager();
-// users.createUser({
-//     name: 'Nicolas',
-//     lastName: 'Mosquera',
-//     username: 'nmosquera',
-//     password: '123Coder'
-// })
-
-
-const prueba = await users.validateUser('nmosquera', '13Coder')
-
-console.log(prueba)
+export default UserManager

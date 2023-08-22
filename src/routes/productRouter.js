@@ -4,7 +4,6 @@ import * as con from '../../utils/GlobalConstants.mjs'
 
 const manager = new ProductManager();
 
-
   
 const productRouter = Router();
 
@@ -14,7 +13,6 @@ productRouter.get('/', async (req, res) => {
         const products = await manager.getProducts(parameters);
         const data = products.docs;
         delete products.docs;
-        console.log(products)
         res.status(200).send(
             {[con.DATA] : data,
               ...products,

@@ -1,0 +1,55 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+<style>
+    .container {
+        background-color: #f3f4f6;
+    }
+    .register-container {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 2rem;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+    .register-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    .register-form {
+        display: grid;
+        gap: 1rem;
+    }
+    .register-input {
+        border: 1px solid #cbd5e0;
+        border-radius: 4px;
+        padding: 0.5rem;
+    }
+    .register-button {
+        background-color: #1a202c;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+    }
+    .register-button:hover {
+        background-color: #2d3748;
+    }
+</style>
+
+<div class="container">
+  <div class="flex items-center justify-center h-screen">
+    <div class="register-container">
+      <h1 class="register-title">Registro</h1>
+      <form class="register-form" action="/register" method="POST">
+        <input class="register-input" type="text" name="name" placeholder="Nombre" required>
+        <input class="register-input" type="text" name="last_name" placeholder="Apellido" required>
+        <input class="register-input" type="text" name="username" placeholder="Usuario" required>
+        <input class="register-input" type="email" name="email" placeholder="Correo electrónico" required>
+        <input class="register-input" type="password" name="password" placeholder="Contraseña" required>
+        <button class="register-button" type="submit">Registrarse</button>
+      </form>
+    </div>
+  </div>
+</div>
