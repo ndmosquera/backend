@@ -48,3 +48,6 @@ export const USERS = 'users'
 export const USERNAME_DB = 'ndmosquera'
 export const PASSWORD_DB = 'a1O3Si9fFpl6JJ58'
 export const SECRET_SESSION = "sd21df56156dgf1h35fd4651zxc"
+export const GITHUB_KEY = "563ed43beb7410c9940db03e744988ef3294b977"
+export const CLIENT_ID_GITHUB = "Iv1.e9ce60f54016780d"
+export const CALLBACK_URL_GITHUB = "http://localhost:8080/api/auth/callback"

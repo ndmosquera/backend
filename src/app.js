@@ -14,6 +14,9 @@ import cookieParser from "cookie-parser";
 import * as con from '../utils/GlobalConstants.mjs'
 import session from "express-session";
 import MongoStore from "connect-mongo";
+import InitLocalStrategy from "./config/passport.js";
+import passport from "passport";
+import authRouter from "./routes/authRouter.js";
 
 // Mongo Configuration
 const mongoURL = `mongodb+srv://${con.USERNAME_DB}:${con.PASSWORD_DB}@codercluster.hhamevg.mongodb.net/${con.DB_NAME}?retryWrites=true&w=majority`
@@ -49,6 +52,10 @@ app.use(session({
   ttl: 3600,
 }));
 
+// Passport Init
+InitLocalStrategy();
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 const httpServer = HTTPServer(app)
@@ -60,6 +67,7 @@ app.use('/', userRouter)
 app.use('/productViews', productViewsRouter)
 app.use("/api/products", productRouter)
 app.use("/api/cart", cartRouter)
+app.use('/api/auth', authRouter)
 
 
 // WebSocket

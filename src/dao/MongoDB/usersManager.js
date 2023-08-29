@@ -21,6 +21,10 @@ class UserManager {
         return await userModel.findOne({ username })
     }
 
+    async getUserById(id){
+        return await userModel.findById(id)
+    }
+
     async validateUser(username, password){
         const user = await this.getUserByUsername(username);
         if(!user){

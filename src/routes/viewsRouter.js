@@ -19,8 +19,8 @@ productViewsRouter.get('/products', async (req, res) => {
         res.render('productsView', {products: productsObjects,
                                     currentPage: products.page, 
                                     totalPages: products.totalPages,
-                                    name: req.session.user[con.NAME],
-                                    lastName: req.session.user[con.LAST_NAME]})
+                                    name: req.user[con.NAME],
+                                    lastName: req.user[con.LAST_NAME]})
     } catch (e){
         res.status(502).send({ [con.STATUS]: con.ERROR, [con.MSG]: e.message });
     }
