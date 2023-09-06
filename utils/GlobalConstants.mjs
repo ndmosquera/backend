@@ -14,12 +14,14 @@ export const PRODUCTS = 'products'
 export const QUANTITY = "quantity"
 
 // User fields
-export const NAME = "name"
+export const FIRST_NAME = "name"
 export const LAST_NAME = "last_name"
 export const USERNAME = "username"
 export const EMAIL = "email"
+export const AGE = "age"
 export const PASSWORD = "password"
 export const AVATAR = "avatar"
+export const CART = "cart"
 export const ROLE = 'role'
 export const USER = 'user'
 export const ADMIN = 'admin'

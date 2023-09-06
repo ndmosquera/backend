@@ -17,6 +17,7 @@ import MongoStore from "connect-mongo";
 import InitLocalStrategy from "./config/passport.js";
 import passport from "passport";
 import authRouter from "./routes/authRouter.js";
+import sessionRouter from "./routes/sessionRouter.js";
 
 // Mongo Configuration
 const mongoURL = `mongodb+srv://${con.USERNAME_DB}:${con.PASSWORD_DB}@codercluster.hhamevg.mongodb.net/${con.DB_NAME}?retryWrites=true&w=majority`
@@ -27,6 +28,7 @@ const app = express();
 app.use(express.static(`${__dirname}/public`))
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
+app.use(cookieParser());
 
 // WebSocket Middleware
 app.use((req, res, next) => {
@@ -57,10 +59,8 @@ InitLocalStrategy();
 app.use(passport.initialize());
 app.use(passport.session());
 
-
 const httpServer = HTTPServer(app)
 const io = new SocketServer(httpServer)
-
 
 // Routes
 app.use('/', userRouter)
@@ -68,7 +68,15 @@ app.use('/productViews', productViewsRouter)
 app.use("/api/products", productRouter)
 app.use("/api/cart", cartRouter)
 app.use('/api/auth', authRouter)
+app.use('/api/session', sessionRouter)
 
+// Middleware that redirects to login
+app.use((req, res, next) => {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+  next();
+});
 
 // WebSocket
 io.on('connection', async socket => {

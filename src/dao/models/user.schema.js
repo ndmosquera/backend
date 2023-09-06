@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import * as con from "../../../utils/GlobalConstants.mjs"
 
 const userSchema = new mongoose.Schema({
-  [con.NAME]: {
+  [con.FIRST_NAME]: {
     type: String,
     required: true,
   },
@@ -17,6 +17,11 @@ const userSchema = new mongoose.Schema({
   [con.EMAIL]: {
     type: String,
     default: "",
+    unique: true,
+  },
+  [con.AGE]: {
+    type: Number,
+    required: true,
   },
   [con.PASSWORD]: {
     type: String,
@@ -24,6 +29,10 @@ const userSchema = new mongoose.Schema({
   },
   [con.AVATAR]: {
     type: String,
+  },
+  [con.CART] : {
+    type : mongoose.Schema.Types.ObjectId,
+    ref : con.CARTS,
   },
   [con.ROLE]: {
     type: String,

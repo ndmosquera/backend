@@ -3,6 +3,11 @@ import local from 'passport-local'
 import UserManager from "../dao/MongoDB/usersManager.js";
 import * as con from '../../utils/GlobalConstants.mjs'
 import GithubStrategy from "passport-github2"
+import jwt from 'passport-jwt'
+import { SECRET } from './jwt.js'
+import cookieExtractor from "../../utils/cookieJWT.js";
+
+const JWTStrategy = jwt.Strategy
 
 const userManager = new UserManager();
 const InitLocalStrategy = () => {
@@ -43,7 +48,7 @@ const InitLocalStrategy = () => {
         if(user) return done(null, user)
 
         const newUser = await userManager.createUser({
-            [con.NAME]: profile._json.name.split(" ")[0],
+            [con.FIRST_NAME]: profile._json.name.split(" ")[0],
             [con.LAST_NAME]: profile._json.name.split(" ")[1],
             username,
             [con.EMAIL]: profile._json.email,
@@ -54,6 +59,18 @@ const InitLocalStrategy = () => {
 
     }))
 
+
+    passport.use('current', new JWTStrategy({
+        jwtFromRequest: jwt.ExtractJwt.fromExtractors([cookieExtractor]),
+        secretOrKey: SECRET
+    }, async (payload, done) => {
+        const user = await userManager.getUserById(payload.sub)
+
+        if(!user) return done('Wrong credentials')
+
+        return done(null, user[con.ID]);
+
+    }))
 
     passport.serializeUser((user, done) => {
         done(null, user[con.ID])
