@@ -45,8 +45,8 @@ userRouter.post('/login', async(req, res) => {
         maxAge: 24 * 60 * 60 * 1000,
         httpOnly: true
     });
-
-    res.status(200).send({[con.STATUS]: con.OK, accessToken: token});
+    // send({[con.STATUS]: con.OK, accessToken: token})
+    res.status(200).redirect('/productViews/products');
 
 })
 
