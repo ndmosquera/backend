@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import UserManager from '../dao/MongoDB/usersManager.js';
 import * as con from '../../utils/GlobalConstants.mjs'
 import passport from 'passport';
+import UserManager from '../services/usersManager.js';
 
 const sessionRouter = Router()
 

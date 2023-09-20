@@ -1,10 +1,12 @@
 import { Router } from 'express'
-import ProductManager from '../dao/MongoDB/productManager.js';
-import MessagesManager from '../dao/MongoDB/msnManager.js';
-import CartManager from '../dao/MongoDB/cartManager.js';
+import ProductManager from '../services/productManager.js';
+import MessagesManager from '../services/msnManager.js';
+import CartManager from '../services/cartManager.js';
 import passport from 'passport';
-import UserManager from '../dao/MongoDB/usersManager.js';
+import UserManager from '../services/usersManager.js';
 import * as con from '../../utils/GlobalConstants.mjs'
+
+import * as productController from '../controllers/productController.js'
 
 
 const userManager = new UserManager()

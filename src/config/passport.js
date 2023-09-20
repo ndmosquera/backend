@@ -1,15 +1,16 @@
 import passport from "passport";
 import local from 'passport-local'
-import UserManager from "../dao/MongoDB/usersManager.js";
 import * as con from '../../utils/GlobalConstants.mjs'
 import GithubStrategy from "passport-github2"
 import jwt from 'passport-jwt'
 import { SECRET } from './jwt.js'
 import cookieExtractor from "../../utils/cookieJWT.js";
+import { generateToken } from "./jwt.js";
+import UserManager from "../services/usersManager.js";
 
 const JWTStrategy = jwt.Strategy
 
-const userManager = new UserManager();
+const userManager = new UserManager;
 const InitLocalStrategy = () => {
     // Register
     passport.use('register', new local.Strategy( {passReqToCallback: true}, 
@@ -31,7 +32,16 @@ const InitLocalStrategy = () => {
 
             const user = await userManager.validateUser(username, password);
 
-            if (!user) return done('Wrong credentials');
+            if (!user) return done('');
+
+            const token = generateToken({
+                sub: req.user[con.ID],
+                user: {[con.USERNAME]: req.user[con.USERNAME]}
+            });
+            req.res.cookie("accessToken", token, {
+                maxAge: 24 * 60 * 60 * 1000,
+                httpOnly: true
+            });
 
             return done(null, user)
         }

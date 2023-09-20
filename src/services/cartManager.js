@@ -1,5 +1,4 @@
-import mongoose from 'mongoose';
-import * as con from '../../../utils/GlobalConstants.mjs';
+import * as con from '../../utils/GlobalConstants.mjs';
 import cartModel from '../models/cart.schema.js';
 import productModel from '../models/product.schema.js';
 

@@ -3,8 +3,8 @@ import productRouter from "./routes/productRouter.js";
 import cartRouter from "./routes/cartRouter.js";
 import handlebars from 'express-handlebars'
 import __dirname from "./dirname.js"; 
-import productViewsRouter from "./routes/viewsRouter.js";
-import userRouter from "./routes/userRouter.js";
+import productViewsRouter from "./routes/productViewRouter.js";
+import userViewRouter from "./routes/userViewRouter.js";
 import { Server as SocketServer } from "socket.io";
 import { Server as HTTPServer } from 'http'
 import mongoose from "mongoose";
@@ -19,9 +19,21 @@ import passport from "passport";
 import authRouter from "./routes/authRouter.js";
 import sessionRouter from "./routes/sessionRouter.js";
 
+import dotenv from 'dotenv'
+import { Command } from 'commander'
+
+// Config Environments Variables
+const program = new Command();
+program.option('--mode <mode>', 'mode of execution', 'local')
+program.parse();
+const options = program.opts();
+dotenv.config({
+    path: options.mode == 'production' ? './.env.production' : './.env'
+})
+
+
 // Mongo Configuration
-const mongoURL = `mongodb+srv://${con.USERNAME_DB}:${con.PASSWORD_DB}@codercluster.hhamevg.mongodb.net/${con.DB_NAME}?retryWrites=true&w=majority`
-export const conn = await mongoose.connect(mongoURL)
+export const conn = await mongoose.connect(process.env.MONGO_URL)
 
 // Express Middleware
 const app = express();
@@ -48,7 +60,7 @@ app.use(session({
   resave: true,
   saveUninitialized: true,
   store: new MongoStore({
-    mongoUrl: mongoURL,
+    mongoUrl: process.env.MONGO_URL,
     ttl: 3600
   }),
   ttl: 3600,
@@ -63,7 +75,7 @@ const httpServer = HTTPServer(app)
 const io = new SocketServer(httpServer)
 
 // Routes
-app.use('/', userRouter)
+app.use('/', userViewRouter)
 app.use('/productViews', productViewsRouter)
 app.use("/api/products", productRouter)
 app.use("/api/cart", cartRouter)
@@ -87,6 +99,6 @@ io.on('connection', async socket => {
 });
 
 // App Connection
-httpServer.listen(8080, () => {
-    console.log('connected')
+httpServer.listen(process.env.PORT, () => {
+    console.log(`connected, PORT:${process.env.PORT}`)
 });

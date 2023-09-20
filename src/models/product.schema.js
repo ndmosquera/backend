@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import moongosePaginate from 'mongoose-paginate-v2'
-import * as con from "../../../utils/GlobalConstants.mjs"
+import * as con from '../../utils/GlobalConstants.mjs'
 
 const productSchema = new mongoose.Schema({
     [con.PRODUCT_TITLE]: {

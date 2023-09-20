@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import * as con from "../../../utils/GlobalConstants.mjs"
+import * as con from "../../utils/GlobalConstants.mjs"
 
 const userSchema = new mongoose.Schema({
   [con.FIRST_NAME]: {

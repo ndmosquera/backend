@@ -1,8 +1,8 @@
 import userModel from '../models/user.schema.js';
-import * as con from '../../../utils/GlobalConstants.mjs';
+import * as con from '../../utils/GlobalConstants.mjs';
 import bcrypt from 'bcrypt'
 
-class UserManager {
+export default class UserManager {
     constructor() {}
 
     async getUsers(){
@@ -47,9 +47,4 @@ class UserManager {
         await user.save()
         return {[con.STATUS]: con.OK}
     }
-
-
-
 }
-
-export default UserManager

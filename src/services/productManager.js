@@ -1,4 +1,4 @@
-import * as con from '../../../utils/GlobalConstants.mjs';
+import * as con from '../../utils/GlobalConstants.mjs';
 import productModel from '../models/product.schema.js';
 
 export default class ProductManager {
