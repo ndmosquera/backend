@@ -2,10 +2,14 @@
 
 const socket = io("http://localhost:8080");
 socket.on('chatHistory', (msgs) => {
-    console.log(msgs)
     const msgHTML = msgs.map(msg => createMessage(msg));
     $("#messages").html(msgHTML.join(" "));
 
+});
+
+socket.on('newMessage', (msgs) => {
+  const msgHTML = createMessage(msgs)
+  $("#messages").append(msgHTML);
 });
 
 function createMessage(msg) {
@@ -26,71 +30,63 @@ function createMessage(msg) {
   </div>`;
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("miFormulario").addEventListener("submit", function (e) {
+      e.preventDefault(); // Evitar el envío predeterminado del formulario
 
-// function createOwnMessage(msg) {
-//         return `<div class="chat-message">
-//         <div class="flex items-end justify-end">
-//             <div
-//             class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-1 items-end"
-//             >
-//             <div>
-//                 <span
-//                 class="px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white"
-//                 >${msg}</span>
-//             </div>
-//             </div>
-//         </div>
-//         </div>`;
-//     }
+      // Obtener el valor del campo de entrada
+      const message = document.getElementById("message").value;
+      const username = getCookie("username")
+      const accessToken = getCookie("Token")
+      console.log(JSON.stringify({message, user:username}))
+      if (message !== "") {
+        // Enviar el mensaje al servidor a través de Socket.io
+        socket.emit("sendMessage", { message, username });
+
+        fetch("http://localhost:8080/chat", {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json', // Establece el tipo de contenido a JSON
+            // 'Cookie': `accessToken=${accessToken}`
+          },
+          body: JSON.stringify({ message, user:username }) // Convierte el objeto en una cadena JSON
+        })
+          .then((response) => {
+            if (!response.ok) {
+              // Manejar errores aquí si la respuesta no es exitosa
+              throw new Error('La solicitud POST no tuvo éxito');
+            }
+            // Si la respuesta es exitosa, puedes hacer algo con la respuesta si es necesario
+            return response.json(); // O response.text() u otros métodos según el tipo de respuesta
+          })
+          .then((data) => {
+            // Manejar los datos de la respuesta del servidor aquí
+            console.log('Respuesta del servidor:', data);
+          })
+          .catch((error) => {
+            // Manejar errores de la solicitud POST
+            console.error('Error:', error);
+          });
+        
+        
+
+      }
 
 
 
-// socket.on("messageLogs", (msgs) => {
-//     console.log(msgs);
-//     const user= localStorage.getItem("username")
+      // Limpia el campo de entrada después de enviar
+      document.getElementById("message").value = "";
+  });
+});
 
-//     const msgHtml = msgs.map((msg) => msg.user == user ? createOwnMessage(msg.message): createMessage(msg));
-//     $("#messages").html(msgHtml.join(" "));
-// });
 
-// function onLoad(){
-//     const username= localStorage.getItem("username")
-//     if(username){
-//         socket.auth = {username}
-//         socket.connect()
-//         $("#chat").removeClass("hidden")
-//         $("#joinChat").addClass("hidden")
-//     }
-// }
-
-// $(function () {
-//     onLoad()
-//     $("#sendMsg").on("click", function () {
-//     const input = $("#message").val();
-//     $("#message").val("");
-//     const user= localStorage.getItem("username")
-//     socket.emit("message", {user: user, message: input});
-
-//     $("#messages").append(createOwnMessage(input));
-//     });
-    
-//     $("#joinBtn").on("click",()=>{
-//         const input= $("#username"). val()
-//         localStorage.setItem("username", input)
-//         console.log({input})
-//         socket.auth= {username:input}
-//         socket.connect()
-//         $("#chat").removeClass("hidden")
-//         $("#joinChat").addClass("hidden")
-//     })
-//     $("#message").on("keyup", function (event) {
-//     if (event.key == "Enter") {
-//         const input = $("#message").val();
-//         $("#message").val("");
-//         const user= localStorage.getItem("username")
-//         socket.emit("message", {user: user, message: input});
-
-//         $("#messages").append(createOwnMessage(input));
-//     }
-//     });
-// });
+function getCookie(givenCookie) {
+  const cookies = document.cookie.split("; ");
+  for (const cookie of cookies) {
+      const [cookieName, cookieValue] = cookie.split("=");
+      if (cookieName === givenCookie) {
+          return cookieValue;
+      }
+  }
+  return null;
+}

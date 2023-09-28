@@ -1,4 +1,4 @@
-import messagesModel from '../models/messages.schema.js'
+import messagesModel from '../models/messagesSchema.js'
 
 class MessagesManager {
     constructor(){};
@@ -9,7 +9,7 @@ class MessagesManager {
     }
 
     async addMessage(message){
-        const newMessage = await messagesModel.insertMany([message]);
+        const newMessage = await messagesModel.create(message);
         return newMessage;
     }
 }

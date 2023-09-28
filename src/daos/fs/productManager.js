@@ -41,17 +41,17 @@ export default class ProductManager {
             ...productData
         };
 
-        if(!(con.PRODUCT_STATUS in productData)){
-            product[con.PRODUCT_STATUS] = true
+        if(!(con.STATUS in productData)){
+            product[con.STATUS] = true
         }
 
-        if(!product[con.PRODUCT_TITLE] || !product[con.PRODUCT_DESCRIPTION] || !product[con.PRODUCT_CODE] ||
-            !product[con.PRODUCT_PRICE] || !product[con.PRODUCT_STOCK] || !product[con.PRODUCT_CATEGORY]){
+        if(!product[con.TITLE] || !product[con.DESCRIPTION] || !product[con.CODE] ||
+            !product[con.PRICE] || !product[con.STOCK] || !product[con.CATEGORY]){
             throw new Error('All fields are required');
         }
 
-        if(this.products.some((p) => p[con.PRODUCT_CODE] === product[con.PRODUCT_CODE])){
-            throw new Error(`Product with ${con.PRODUCT_CODE}:${product[con.PRODUCT_CODE]} already exists`);
+        if(this.products.some((p) => p[con.CODE] === product[con.CODE])){
+            throw new Error(`Product with ${con.CODE}:${product[con.CODE]} already exists`);
         }
 
         this.products.push(product);
@@ -78,10 +78,10 @@ export default class ProductManager {
             throw new Error("You can not update an ID product")
         }
         
-        if(con.PRODUCT_CODE in updatedFields){
+        if(con.CODE in updatedFields){
             
-            if(this.products.some((p) => p[con.PRODUCT_CODE] === updatedFields[con.PRODUCT_CODE])){
-                throw new Error(`Product with ${con.PRODUCT_CODE}:${updatedFields[con.PRODUCT_CODE]} already exists`);
+            if(this.products.some((p) => p[con.CODE] === updatedFields[con.CODE])){
+                throw new Error(`Product with ${con.CODE}:${updatedFields[con.CODE]} already exists`);
             }
         }
         
@@ -110,11 +110,11 @@ export default class ProductManager {
     }
 
     getProductByCode(code){
-        const product = this.products.find(item => item[con.PRODUCT_CODE] === code);
+        const product = this.products.find(item => item[con.CODE] === code);
         if(product){
             return product;
         } else {
-            throw new Error(`Not found a product with ${con.PRODUCT_CODE} = ${code}`)
+            throw new Error(`Not found a product with ${con.CODE} = ${code}`)
         }
     }
 }

@@ -6,21 +6,29 @@ import jwt from 'passport-jwt'
 import { SECRET } from './jwt.js'
 import cookieExtractor from "../../utils/cookieJWT.js";
 import { generateToken } from "./jwt.js";
-import UserManager from "../services/usersManager.js";
+import * as userServices from '../services/usersServices.js'
 
 const JWTStrategy = jwt.Strategy
 
-const userManager = new UserManager;
 const InitLocalStrategy = () => {
     // Register
     passport.use('register', new local.Strategy( {passReqToCallback: true}, 
         async(req, username, password, done) =>{
             const newUser = req.body;
-            const userExist = await userManager.getUserByUsername(username);
+            const userExist = await userServices.getUserByUsername(username);
 
             if (userExist) return done('This user already exists');
 
-            const user = await userManager.createUser(newUser);
+            const user = await userServices.createUser(newUser);
+
+            const token = generateToken({
+                sub: user,
+                user: user
+            });
+            req.res.cookie("accessToken", token, {
+                maxAge: 24 * 60 * 60 * 1000,
+                httpOnly: true
+            });
 
             return done(null, user)
         }
@@ -30,13 +38,12 @@ const InitLocalStrategy = () => {
     passport.use('login', new local.Strategy( {passReqToCallback: true}, 
         async(req, username, password, done) =>{
 
-            const user = await userManager.validateUser(username, password);
-
+            const user = await userServices.validateUser(username, password);
             if (!user) return done('');
 
             const token = generateToken({
-                sub: req.user[con.ID],
-                user: {[con.USERNAME]: req.user[con.USERNAME]}
+                sub: user,
+                user: user
             });
             req.res.cookie("accessToken", token, {
                 maxAge: 24 * 60 * 60 * 1000,
@@ -74,7 +81,7 @@ const InitLocalStrategy = () => {
         jwtFromRequest: jwt.ExtractJwt.fromExtractors([cookieExtractor]),
         secretOrKey: SECRET
     }, async (payload, done) => {
-        const user = await userManager.getUserById(payload.sub)
+        const user = await userServices.getUserById(payload.sub)
 
         if(!user) return done('Wrong credentials')
 
@@ -87,7 +94,7 @@ const InitLocalStrategy = () => {
     })
 
     passport.deserializeUser(async (id, done) => {
-        const user = await userManager.getUserById(id);
+        const user = await userServices.getUserById(id);
         done(null, user);
     })
 

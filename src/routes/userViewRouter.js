@@ -2,20 +2,16 @@ import { Router } from 'express'
 import * as con from '../../utils/GlobalConstants.mjs'
 import { isLogged, protectView } from '../../utils/secure.js';
 import passport from 'passport';
-import UserManager from '../services/usersManager.js';
+import * as userServices from '../services/usersServices.js';
 
 
 const userRouter = Router()
-
-const userManager = new UserManager()
-
 
 
 userRouter.get("/login", isLogged, async (req, res) =>{
     const {loginError = false} = req.query
     res.render("login", {loginError})
 }) 
-
 
 userRouter.post(
     '/login',
@@ -40,7 +36,7 @@ userRouter.post("/register", passport.authenticate('register'),
 }) 
 
 userRouter.get("/profile", passport.authenticate("current", {session: false}), async (req, res) =>{
-    const user = await userManager.getUserById(req.user);
+    const user = await userServices.getUserById(req.user);
     res.render('profile', {name: user[con.FIRST_NAME], last_name: user[con.LAST_NAME], username: user[con.USERNAME], email: user[con.EMAIL], role: user[con.ROLE]})  
 }) 
 
@@ -55,7 +51,7 @@ userRouter.get('/logout', protectView, (req, res) => {
 userRouter.post('/recoveryPassword', async(req, res) => {
     try{
         const { username, password } = req.body
-        const result = await userManager.recoverUserPassword(username, password);
+        const result = await userServices.recoverUserPassword(username, password);
         res.status(200).send({[con.STATUS]: result[con.STATUS],
                               [con.MSG]: 'The password has been changed successfully.'})
     } catch (e){

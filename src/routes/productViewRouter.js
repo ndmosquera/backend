@@ -1,30 +1,26 @@
 import { Router } from 'express'
-import ProductManager from '../services/productManager.js';
-import MessagesManager from '../services/msnManager.js';
-import CartManager from '../services/cartManager.js';
 import passport from 'passport';
-import UserManager from '../services/usersManager.js';
+import * as userServices from '../services/usersServices.js'
+import * as productServices from '../services/productServices.js'
+import * as cartServices from '../services/cartServices.js'
 import * as con from '../../utils/GlobalConstants.mjs'
 
-import * as productController from '../controllers/productController.js'
 
-
-const userManager = new UserManager()
-const productManager = new ProductManager();
-const cartManager = new CartManager();
-const messagesManager = new MessagesManager();
+// const userManager = new UserManager()
+// const productManager = new ProductManager();
+// const cartManager = new CartManager();
+// const messagesManager = new MessagesManager();
 
 const productViewsRouter = Router();
 
 productViewsRouter.get('/products', passport.authenticate("current", {session: false}), async (req, res) => {
     try{
         const parameters = req.query
-        const user = await userManager.getUserById(req.user);
-        const products = await productManager.getProducts(parameters);
-        const productsObjects = products.docs.map(product => product.toObject());
-        res.render('productsView', {products: productsObjects,
-                                    currentPage: products.page, 
-                                    totalPages: products.totalPages,
+        const user = await userServices.getUserById(req.user);
+        const result = await productServices.getAllProducts(parameters)
+        res.status(201).render('productsView', {products: result[con.PRODUCTS],
+                                    currentPage: result.page, 
+                                    totalPages: result.totalPages,
                                     name: user[con.FIRST_NAME],
                                     lastName: user[con.LAST_NAME],
                                     role: user[con.ROLE]})
@@ -36,7 +32,7 @@ productViewsRouter.get('/products', passport.authenticate("current", {session: f
 productViewsRouter.get('/products/:pid', async (req, res) => {
     try{
         const { pid } = req.params;
-        const product = (await productManager.getProductById(pid)).toObject();
+        const product = await productServices.getProductById(pid);
         res.render('productDetail', product)
     } catch (e){
         res.status(502).send({ [con.STATUS]: con.ERROR, [con.MSG]: e.message });
@@ -46,15 +42,14 @@ productViewsRouter.get('/products/:pid', async (req, res) => {
 productViewsRouter.get('/carts/:cid', async (req, res) => {
     try {
         const { cid } = req.params;
-        const cart = await cartManager.getCartById(cid);
-        const cartObjects = cart[con.PRODUCTS].map(item => item.toObject());
+        const cart = await cartServices.getCartById(cid);
         let totalPrice = 0;
-        cartObjects.forEach(product => {
-            totalPrice += product[con.ID][con.PRODUCT_PRICE] * product[con.QUANTITY];
+        cart.forEach(product => {
+            totalPrice += product[con.ID][con.PRICE] * product[con.QUANTITY];
         });
         totalPrice = totalPrice.toFixed(2)
         res.status(200).render('cart', {
-            cart: cartObjects,
+            cart: cart,
             totalPrice
         });
     } catch (e) {
@@ -64,21 +59,11 @@ productViewsRouter.get('/carts/:cid', async (req, res) => {
 
 productViewsRouter.get('/realtimeproducts', async (req, res) => {
     try{
-        const products = await productManager.getProducts();
-        const productsObjects = products.map(product => product.toObject());
-        res.render('realTimeProducts', {products: productsObjects})
+        const products = await productServices.getAllProducts();
+        res.render('realTimeProducts', {products: products})
     } catch (e){
         res.status(502).send({ [con.STATUS]: con.ERROR, [con.MSG]: e.message });
     }
 });
-
-productViewsRouter.get('/chat', async(req, res) => {
-    const io = req.io;
-    const messages = await messagesManager.getMessages();
-    const messagesObjects = messages.map(message => message.toObject());
-    io.emit('chatHistory', messagesObjects)
-    res.render('chat')
-})
-
 
 export default productViewsRouter;

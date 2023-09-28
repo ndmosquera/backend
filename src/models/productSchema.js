@@ -1,41 +1,41 @@
 import mongoose from "mongoose";
-import moongosePaginate from 'mongoose-paginate-v2'
+import mongoosePaginate from 'mongoose-paginate-v2'
 import * as con from '../../utils/GlobalConstants.mjs'
 
 const productSchema = new mongoose.Schema({
-    [con.PRODUCT_TITLE]: {
+    [con.TITLE]: {
         type : String,
         require : true
         },
-    [con.PRODUCT_DESCRIPTION]: {
+    [con.DESCRIPTION]: {
         type: String,
         require : true
         },
-    [con.PRODUCT_CODE]: {
+    [con.CODE]: {
         type: String,
         require : true
         },
-    [con.PRODUCT_PRICE]: {
+    [con.PRICE]: {
         type: Number,
         require : true
         },
-    [con.PRODUCT_STATUS]: {
+    [con.STATUS]: {
         type: Boolean
         },
-    [con.PRODUCT_STOCK]: {
+    [con.STOCK]: {
         type: Number,
         require : true
         },
-    [con.PRODUCT_CATEGORY]: {
+    [con.CATEGORY]: {
         type: String,
         require : true
         },
-    [con.PRODUCT_THUMBNAIL]: {
+    [con.THUMBNAIL]: {
         type: String
         }
 })
 
-productSchema.plugin(moongosePaginate)
+productSchema.plugin(mongoosePaginate)
 
 const productModel = mongoose.model(con.PRODUCTS, productSchema)
 

@@ -1,15 +1,12 @@
 import * as con from '../../utils/GlobalConstants.mjs'
-import ProductManager from '../services/productManager.js';
+import * as productServices from '../services/productServices.js'
 
-
-const productManager = new ProductManager();
 
 export const GETAllProducts = async(req, res) => {
     try{
         const parameters = req.query
-        const products = await productManager.getProducts(parameters);
-        const productsObjects = products.docs.map(product => product.toObject());
-        res.status(200).send({ [con.STATUS]: con.OK, [con.DATA]: productsObjects });
+        const products = await productServices.getAllProducts(parameters);
+        res.status(200).send({ [con.STATUS]: con.OK, [con.DATA]: products });
     } catch (e){
         res.status(502).send({ [con.STATUS]: con.ERROR, [con.MSG]: e.message });
     }
@@ -19,7 +16,7 @@ export const POSTProduct = async(req, res) => {
     const body = req.body;
     const io = req.io;
     try{
-        const newProduct = await productManager.addProduct(body);
+        const newProduct = await productServices.addProduct(body);
         io.emit('productCreated', newProduct)
         res.status(200).send({
             [con.DATA] : newProduct,
@@ -37,7 +34,7 @@ export const POSTProduct = async(req, res) => {
 export const GETProductByID = async(req, res) => {
     try{
         const { pid } = req.params;
-        const product = (await productManager.getProductById(pid)).toObject();
+        const product = await productServices.getProductById(pid);
         res.status(200).send({ [con.STATUS]: con.OK, [con.DATA]: product });
     } catch (e){
         res.status(502).send({ [con.STATUS]: con.ERROR, [con.MSG]: e.message });
@@ -48,7 +45,7 @@ export const PUTProductByID = async(req, res) => {
     try{
         const { pid } = req.params;
         const body = req.body;
-        const result = await manager.updateProduct(pid, body);
+        const result = await productServices.updateProduct(pid, body);
         res.status(200).send({
             [con.DATA] : result,
             [con.STATUS] : con.OK,
@@ -65,7 +62,7 @@ export const PUTProductByID = async(req, res) => {
 export const DELETEProductByID = async(req, res) => {
     try{
         const { pid } = req.params;
-        const result = await manager.deleteProduct(pid);
+        const result = await productServices.deleteProduct(pid);
         const io = req.io;
         io.emit('productDeleted', pid)
         res.status(200).send({

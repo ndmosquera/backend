@@ -1,12 +1,11 @@
 // Products fields
-export const PRODUCT_TITLE = 'title'
-export const PRODUCT_DESCRIPTION = 'description'
-export const PRODUCT_CODE = 'code'
-export const PRODUCT_PRICE = 'price'
-export const PRODUCT_STATUS = 'status'
-export const PRODUCT_STOCK = 'stock'
-export const PRODUCT_CATEGORY = 'category'
-export const PRODUCT_THUMBNAIL = 'thumbnail'
+export const TITLE = 'title'
+export const DESCRIPTION = 'description'
+export const CODE = 'code'
+export const PRICE = 'price'
+export const STOCK = 'stock'
+export const CATEGORY = 'category'
+export const THUMBNAIL = 'thumbnail'
 export const ID = '_id'
 
 // Carts fields
@@ -26,6 +25,18 @@ export const ROLE = 'role'
 export const USER = 'user'
 export const ADMIN = 'admin'
 
+// Ticket fields
+export const PURCHASE_DATETIME = "purchase_datetime"
+export const AMOUNT = "amount"
+export const PURCHASER = "purchaser"
+export const PURCHASE = 'purchase'
+
+// Generic
+export const COMPLETE = "complete"
+export const INCOMPLETE = "incomplete"
+
+
+// PATHS
 export const PATH_PRODUCTS_FILE = './src/data/products.json'
 export const PATH_CARTS_FILE = './src/data/carts.json'
 export const PATH_USERS_FILE = './src/data/users.json'
@@ -44,6 +55,7 @@ export const ERROR = 'error'
 export const CARTS = 'carts'
 export const MESSAGES = 'messages'
 export const USERS = 'users'
+export const TICKET = 'ticket'
 
 
 // Config

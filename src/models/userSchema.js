@@ -40,6 +40,14 @@ const userSchema = new mongoose.Schema({
   }
 });
 
+userSchema.pre("find", function () {
+  this.populate(con.CART);
+});
+
+userSchema.pre("findOne", function () {
+  this.populate(con.CART);
+});
+
 const userModel = mongoose.model(con.USERS, userSchema);
 
 export default userModel;
