@@ -123,7 +123,6 @@ export const PUTProductInCart = async (req, res) => {
 export const DELETECartByID = async (req, res) => {
     try {
         const { cid } = req.params;
-        
         const result = await cartServices.removeAllProducts(cid);
         
         res.status(200).send({

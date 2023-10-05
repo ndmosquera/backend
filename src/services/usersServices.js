@@ -47,6 +47,20 @@ export const recoverUserPassword = async(username, password) => {
     return {[con.STATUS]: con.OK}
 }
 
+export const updateUser = async(id, updatedFields) => {
+    if(con.ID in updatedFields){
+        throw new Error("You can not update an ID user")
+    }
+
+    const user = await userDAO.findByIdAndUpdate(id, updatedFields, { new: true })
+    
+    if(user){
+        return user.toObject();
+    } else{
+        throw new Error(`Not found a user with ${con.ID} = ${id}`);
+    }
+}
+
 
 
 

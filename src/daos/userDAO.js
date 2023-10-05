@@ -19,4 +19,8 @@ export default class UserDAO {
   create = async (newUser) => {
     return await userModel.create(newUser);
   };
+
+  async findByIdAndUpdate(id, action, args){
+    return await userModel.findByIdAndUpdate(id, action, args);
+  };
 }

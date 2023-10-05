@@ -65,3 +65,13 @@ export const SECRET_SESSION = "sd21df56156dgf1h35fd4651zxc"
 export const GITHUB_KEY = "563ed43beb7410c9940db03e744988ef3294b977"
 export const CLIENT_ID_GITHUB = "Iv1.e9ce60f54016780d"
 export const CALLBACK_URL_GITHUB = "http://localhost:8080/api/auth/callback"
+
+// Errors enum
+export const EErrors = {
+    ROUTING_ERROR : 1,
+    SERVICE_ERROR : 2,
+    DATABASE_ERROR : 3,
+    USER_INPUT_ERROR : 4,
+    PRODUCT_ERROR: 5,
+    AUTH_ERROR: 6
+}

@@ -37,9 +37,27 @@ userRouter.post("/register", passport.authenticate('register'),
 
 userRouter.get("/profile", passport.authenticate("current", {session: false}), async (req, res) =>{
     const user = await userServices.getUserById(req.user);
-    res.render('profile', {name: user[con.FIRST_NAME], last_name: user[con.LAST_NAME], username: user[con.USERNAME], email: user[con.EMAIL], role: user[con.ROLE]})  
+    const cid = user[con.CART] ? user[con.CART][con.ID].toString() : undefined
+    res.render('profile', {name: user[con.FIRST_NAME], last_name: user[con.LAST_NAME],
+                         username: user[con.USERNAME], email: user[con.EMAIL],
+                         role: user[con.ROLE], cid})  
 }) 
 
+userRouter.put('/edit', passport.authenticate("current", {session: false}), async (req, res) =>{
+    try{
+    const updateField = req.body
+    const user = await userServices.updateUser(req.user, updateField);
+    res.status(200).send({
+        [con.DATA] : user,
+        [con.STATUS] : con.OK,
+    });
+    } catch{
+        res.status(502).send({
+            [con.STATUS] : con.ERROR,
+            [con.MSG] : e.message
+        })
+    }
+}) 
 
 userRouter.get('/logout', protectView, (req, res) => {
     res.clearCookie("accessToken");
@@ -59,6 +77,5 @@ userRouter.post('/recoveryPassword', async(req, res) => {
     }
 })
   
-
 
 export default userRouter

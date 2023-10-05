@@ -17,15 +17,15 @@ const cartSchema = new mongoose.Schema({
 })
 
 cartSchema.pre("find", function () {
-    this.populate([con.PRODUCTS][con.ID]);
+    this.populate(con.PRODUCTS + '.' + con.ID);
   });
   
   cartSchema.pre("findOne", function () {
-    this.populate([con.PRODUCTS][con.ID]);
+    this.populate(con.PRODUCTS + '.' + con.ID);
   });
   
   cartSchema.pre("findOneAndUpdate", function () {
-    this.populate([con.PRODUCTS][con.ID]);
+    this.populate(con.PRODUCTS + '.' + con.ID);
   });
 
 const cartModel = mongoose.model(con.CARTS, cartSchema)

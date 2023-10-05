@@ -7,7 +7,10 @@ const cartDAO = new CartDAO();
 const productDAO = new ProductDAO();
 
 export const createNewCart = async () => {
-    return await cartDAO.create();
+    const cart = {
+        [con.PRODUCTS]: []
+    };
+    return await cartDAO.create(cart);
 };
 
 export const getAllCarts = async () => {

@@ -66,8 +66,99 @@ header{
 }
 </style>
 
+<script>
+function addToCart() {
+    const form = document.getElementById('addToCartForm');
+    const productId = form.productId.value;
+    const cid = "{{cid}}";
+
+    if (!cid) {
+        // Cart Create
+        fetch('/api/cart/', {
+            method: 'POST',
+            body: new URLSearchParams({ productId }),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.status === "ok") {
+                const cartID = data.data._id;
+                // Assign cart to user
+                fetch('/edit', {
+                    method: "PUT",
+                    body: JSON.stringify({ cart: cartID }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(responseData => {
+                    return responseData.json();
+                })
+                .catch(error => {
+                    console.error('Error en la segunda solicitud PUT:', error);
+                })
+                .then(data => {
+                    if (data && data.status === "ok") {
+                        // POST product in cart
+                        fetch(`/api/cart/${cartID}/product/${productId}`, {
+                            method: "POST",
+                            body: new URLSearchParams({ productId }),
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                        })
+                        .then(finalResponse => finalResponse.json())
+                        .then(finalData => {
+                            if (finalData && finalData.status === "ok") {
+                                console.log('Producto agregado al carrito exitosamente.');
+                            } else {
+                                console.error('Error al agregar el producto al carrito:', finalData.message);
+                            }
+                        })
+                        .catch(finalError => {
+                            console.error('Error en la tercera solicitud POST:', finalError);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error en la primera solicitud POST:', error);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error en la primera solicitud POST:', error);
+        });
+    } else {
+        // POST product in cart
+        fetch(`/api/cart/${cid}/product/${productId}`, {
+            method: "POST",
+            body: new URLSearchParams({ productId }),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        })
+        .then(finalResponse => finalResponse.json())
+        .then(finalData => {
+            if (finalData && finalData.status === "ok") {
+                console.log('Producto agregado al carrito exitosamente.');
+            } else {
+                console.error('Error al agregar el producto al carrito:', finalData.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error en la tercera solicitud POST:', error);
+        });
+    }
+}
+
+
+</script>
+
 <header>
 <h1 class="saludo">Bienvenid@, {{ name }} {{ lastName }}, tu perfil es de <span style="color: red;">{{role}}</span></h1>
+<a class="logout-btn" href="/profile">Profile</a>
 <a class="logout-btn" href="/logout">Logout</a>
 </header>
 <div class="container">
@@ -81,9 +172,9 @@ header{
             <p>Precio: ${{price}}</p>
             <p>Categoría: {{category}}</p>
             <a href="/productViews/products/{{_id}}">Ver Detalles</a>
-            <form action="/cart/add" method="POST">
+            <form id="addToCartForm" method="POST">
                 <input type="hidden" name="productId" value="{{_id}}">
-                <button type="submit">Añadir al Carrito</button>
+                <button type="submit" onclick="addToCart()" >Añadir al Carrito</button>
             </form>
         </div>
     </li>

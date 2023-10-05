@@ -22,6 +22,8 @@ import dotenv from 'dotenv'
 import { Command } from 'commander'
 import chatViewsRouter from "./routes/chatViewRouter.js";
 import MessagesManager from "./services/msnManager.js";
+import cartViewRouter from "./routes/cartViewRouter.js";
+import mocksRouter from "./routes/mocksRouter.js";
 
 // Config Environments Variables
 const program = new Command();
@@ -79,10 +81,12 @@ const io = new SocketServer(httpServer)
 // Routes
 app.use('/', userViewRouter)
 app.use('/productViews', productViewsRouter)
+app.use('/cartViews', cartViewRouter)
 app.use("/api/products", productRouter)
 app.use("/api/cart", cartRouter)
 app.use('/chat', chatViewsRouter)
 app.use('/api/auth', authRouter)
+app.use('/api/mocks', mocksRouter)
 // app.use('/api/session', sessionRouter)
 
 // Middleware that redirects to login

@@ -3,8 +3,8 @@ import cartModel from "../models/cartSchema.js";
 export default class CartDAO {
     constructor() {}
 
-    async create(){
-        return await cartModel.create();
+    async create(cart){
+        return await cartModel.create(cart);
     };
 
     async find(){
