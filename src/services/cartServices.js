@@ -1,4 +1,6 @@
 import * as con from '../../utils/GlobalConstants.mjs';
+import { generateNotFoundCartError } from '../../utils/generateCartErrorInfo.js';
+import { generateNotFoundProductError } from '../../utils/generateProductErrorInfo.js';
 import CartDAO from '../daos/cartDAO.js';
 import ProductDAO from '../daos/productDAO.js';
 
@@ -23,18 +25,33 @@ export const getCartById = async(id) =>{
         const cartObjects = cart[con.PRODUCTS].map(item => item.toObject());
         return cartObjects;
     }else{
-        throw new Error(`Not found a cart with ${con.ID} = ${id}`)
+        CustomError.createError({
+            message: `Not found a cart with ${con.ID} = ${id}`,
+            cause: generateNotFoundCartError(id),
+            name: "Cart Error",
+            code: con.EErrors.USER_INPUT_ERROR
+        })
     }
 };
 
 export const addToCart = async(cid, pid) =>{
     const cart = await cartDAO.findById(cid);
     if(!cart){
-        throw new Error(`Cart with ${con.ID} : ${cid} do not exist`)
+        CustomError.createError({
+            message: `Not found a cart with ${con.ID} = ${id}`,
+            cause: generateNotFoundCartError(id),
+            name: "Cart Error",
+            code: con.EErrors.USER_INPUT_ERROR
+        })
     };
     const product = await productDAO.findById(pid);
     if(!product){
-        throw new Error(`Product with ${con.ID} : ${pid} do not exist`)
+        CustomError.createError({
+            message: `Not found a product with ${con.ID} = ${pid}`,
+            cause: generateNotFoundProductError(pid),
+            name: "Product Error",
+            code: con.EErrors.USER_INPUT_ERROR
+        })
     };
     const updateCart = await cartDAO.findOneAndUpdate(
         {[con.ID] : cid, [`${con.PRODUCTS}.${con.ID}`] : pid},
@@ -66,7 +83,12 @@ export const deleteProductFromCart = async(cid, pid) =>{
     );
 
     if(!updateCart){
-        throw new Error(`Not found a cart with ${con.ID} = ${cid}`)
+        CustomError.createError({
+            message: `Not found a cart with ${con.ID} = ${id}`,
+            cause: generateNotFoundCartError(id),
+            name: "Cart Error",
+            code: con.EErrors.USER_INPUT_ERROR
+        })
     };
 
     return updateCart;
@@ -80,7 +102,12 @@ export const addQuantityProduct = async(cid, pid, qty) => {
     );
 
     if (!cart) {
-        throw new Error(`Not found a cart with ${con.ID} = ${cid}`);
+        CustomError.createError({
+            message: `Not found a cart with ${con.ID} = ${id}`,
+            cause: generateNotFoundCartError(id),
+            name: "Cart Error",
+            code: con.EErrors.USER_INPUT_ERROR
+        })
     }
     const productIndex = cart.products.findIndex(product => product[con.ID].toString() === pid);
     if (productIndex === -1) {
@@ -96,7 +123,12 @@ export const removeAllProducts = async(cid) =>{
         { new: true }
     );
     if (!cart) {
-        throw new Error(`Not found a cart with ${con.ID} = ${cid}`);
+        CustomError.createError({
+            message: `Not found a cart with ${con.ID} = ${id}`,
+            cause: generateNotFoundCartError(id),
+            name: "Cart Error",
+            code: con.EErrors.USER_INPUT_ERROR
+        })
     }
     return cart;
 };
@@ -104,7 +136,12 @@ export const removeAllProducts = async(cid) =>{
 export const updateAllCart = async(cid, productsArray) => {
     const cart = await cartDAO.findById(cid);
     if (!cart) {
-        throw new Error(`Cart with ID ${cid} not found`);
+        CustomError.createError({
+            message: `Not found a cart with ${con.ID} = ${id}`,
+            cause: generateNotFoundCartError(id),
+            name: "Cart Error",
+            code: con.EErrors.USER_INPUT_ERROR
+        })
     }
     const errors = [];
     for (const productItem of productsArray) {
@@ -129,7 +166,12 @@ export const updateAllCart = async(cid, productsArray) => {
 export const finishPurchase = async (cid) => {
     const cart = await getCartById(cid);
     if (!cart) {
-        throw new Error(`Cart with ID ${cid} not found`);
+        CustomError.createError({
+            message: `Not found a cart with ${con.ID} = ${cid}`,
+            cause: generateNotFoundCartError(cid),
+            name: "Cart Error",
+            code: con.EErrors.USER_INPUT_ERROR
+        })
     };
     
     const productErrors = {}

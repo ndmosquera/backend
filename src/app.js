@@ -24,6 +24,7 @@ import chatViewsRouter from "./routes/chatViewRouter.js";
 import MessagesManager from "./services/msnManager.js";
 import cartViewRouter from "./routes/cartViewRouter.js";
 import mocksRouter from "./routes/mocksRouter.js";
+import ErrorHandlerMiddleware from "../utils/error.middleware.js";
 
 // Config Environments Variables
 const program = new Command();
@@ -88,6 +89,9 @@ app.use('/chat', chatViewsRouter)
 app.use('/api/auth', authRouter)
 app.use('/api/mocks', mocksRouter)
 // app.use('/api/session', sessionRouter)
+
+// Error Handler Middleware
+app.use(ErrorHandlerMiddleware)
 
 // Middleware that redirects to login
 app.use((req, res, next) => {

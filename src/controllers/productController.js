@@ -8,6 +8,7 @@ export const GETAllProducts = async(req, res) => {
         const products = await productServices.getAllProducts(parameters);
         res.status(200).send({ [con.STATUS]: con.OK, [con.DATA]: products });
     } catch (e){
+        console.log(e)
         res.status(502).send({ [con.STATUS]: con.ERROR, [con.MSG]: e.message });
     }
 }
@@ -24,6 +25,7 @@ export const POSTProduct = async(req, res) => {
             [con.MSG] : 'Product added successfully'
         });
     }catch (e){
+        console.log(e)
             res.status(502).send({
                 [con.STATUS] : con.ERROR,
                 [con.MSG] : e.message
@@ -37,6 +39,7 @@ export const GETProductByID = async(req, res) => {
         const product = await productServices.getProductById(pid);
         res.status(200).send({ [con.STATUS]: con.OK, [con.DATA]: product });
     } catch (e){
+        console.log(e)
         res.status(502).send({ [con.STATUS]: con.ERROR, [con.MSG]: e.message });
     }
 }
@@ -52,6 +55,7 @@ export const PUTProductByID = async(req, res) => {
             [con.MSG] : 'Product updated successfully'
         });
     }catch (e){
+        console.log(e)
             res.status(502).send({
                 [con.STATUS] : con.ERROR,
                 [con.MSG] : e.message
@@ -71,6 +75,7 @@ export const DELETEProductByID = async(req, res) => {
             [con.MSG] : 'Product deleted successfully'
         });
     }catch (e){
+        console.log(e)
             res.status(502).send({
                 [con.STATUS] : con.ERROR,
                 [con.MSG] : e.message

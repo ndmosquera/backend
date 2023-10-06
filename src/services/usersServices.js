@@ -1,6 +1,7 @@
 import UserDAO from '../daos/userDAO.js';
 import * as con from '../../utils/GlobalConstants.mjs';
 import bcrypt from 'bcrypt'
+import { generateAssignUserIdError, generateNotFoundUserError } from '../../utils/generateUserErrorInfo.js';
 
 
 const userDAO = new UserDAO(); 
@@ -49,7 +50,12 @@ export const recoverUserPassword = async(username, password) => {
 
 export const updateUser = async(id, updatedFields) => {
     if(con.ID in updatedFields){
-        throw new Error("You can not update an ID user")
+        CustomError.createError({
+            message: "You can not assign or update an ID user",
+            cause: generateAssignUserIdError(),
+            name: "User Error",
+            code: con.EErrors.USER_INPUT_ERROR
+        })
     }
 
     const user = await userDAO.findByIdAndUpdate(id, updatedFields, { new: true })
@@ -57,7 +63,12 @@ export const updateUser = async(id, updatedFields) => {
     if(user){
         return user.toObject();
     } else{
-        throw new Error(`Not found a user with ${con.ID} = ${id}`);
+        CustomError.createError({
+            message: `Not found a user with ${con.ID} = ${id}`,
+            cause: generateNotFoundUserError(id),
+            name: "User Error",
+            code: con.EErrors.USER_INPUT_ERROR
+        })
     }
 }
 

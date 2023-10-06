@@ -31,6 +31,7 @@ userRouter.post("/register", passport.authenticate('register'),
     try{
         res.redirect('/profile');
     } catch (e){
+        console.log(e)
         res.status(502).send({[con.STATUS] : con.ERROR, [con.MSG] : e.message})
     }
 }) 
@@ -73,6 +74,7 @@ userRouter.post('/recoveryPassword', async(req, res) => {
         res.status(200).send({[con.STATUS]: result[con.STATUS],
                               [con.MSG]: 'The password has been changed successfully.'})
     } catch (e){
+        console.log(e)
         res.status(502).send({[con.STATUS] : con.ERROR, [con.MSG] : e.message})
     }
 })
