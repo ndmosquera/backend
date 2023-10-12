@@ -59,12 +59,13 @@ const InitLocalStrategy = () => {
         clientSecret: con.GITHUB_KEY,
         callbackURL: con.CALLBACK_URL_GITHUB
     }, async (accessToken, refreshToken, profile, done) => {
-        const username = profile._json.login
-        const user = await userManager.getUserByUsername(username)
+        console.log(profile)
+        const username = profile._json.username
+        const user = await userServices.getUserByUsername(username)
 
         if(user) return done(null, user)
 
-        const newUser = await userManager.createUser({
+        const newUser = await userServices.createUser({
             [con.FIRST_NAME]: profile._json.name.split(" ")[0],
             [con.LAST_NAME]: profile._json.name.split(" ")[1],
             username,

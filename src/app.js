@@ -18,27 +18,17 @@ import InitLocalStrategy from "./config/passport.js";
 import passport from "passport";
 import authRouter from "./routes/authRouter.js";
 
-import dotenv from 'dotenv'
-import { Command } from 'commander'
 import chatViewsRouter from "./routes/chatViewRouter.js";
 import MessagesManager from "./services/msnManager.js";
 import cartViewRouter from "./routes/cartViewRouter.js";
 import mocksRouter from "./routes/mocksRouter.js";
 import ErrorHandlerMiddleware from "../utils/error.middleware.js";
 import winston from '../utils/winston.js'
-
-// Config Environments Variables
-const program = new Command();
-program.option('--mode <mode>', 'mode of execution', 'dev')
-program.parse();
-const options = program.opts();
-dotenv.config({
-    path: options.mode == 'production' ? './.env.production' : './.env.dev'
-})
-
+import loggerRouter from "./routes/loggersRouter.js";
+import ENV from './config/loadENV.js'
 
 // Mongo Configuration
-export const conn = await mongoose.connect(process.env.MONGO_URL)
+export const conn = await mongoose.connect(ENV.MONGO_URL)
 
 // Express Middleware
 const app = express();
@@ -67,7 +57,7 @@ app.use(session({
   resave: true,
   saveUninitialized: true,
   store: new MongoStore({
-    mongoUrl: process.env.MONGO_URL,
+    mongoUrl: ENV.MONGO_URL,
     ttl: 3600
   }),
   ttl: 3600,
@@ -90,7 +80,7 @@ app.use("/api/cart", cartRouter)
 app.use('/chat', chatViewsRouter)
 app.use('/api/auth', authRouter)
 app.use('/api/mocks', mocksRouter)
-// app.use('/api/session', sessionRouter)
+app.use('/api', loggerRouter)
 
 app.get('/api/test', (req,res) =>{
   let hola = tema
@@ -121,6 +111,6 @@ io.on('connection', async socket => {
 });
 
 // App Connection
-httpServer.listen(process.env.PORT, () => {
-    console.log(`connected, PORT:${process.env.PORT}`)
+httpServer.listen(ENV.PORT, () => {
+    console.log(`connected, PORT:${ENV.PORT}`)
 });

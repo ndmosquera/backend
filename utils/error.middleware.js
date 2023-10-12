@@ -1,9 +1,19 @@
 import * as con from './GlobalConstants.mjs'
 import prodConfig from '../src/config/loggers/config.prod.js';
 import devConfig from '../src/config/loggers/config.dev.js';
+import ENV from '../src/config/loadENV.js'
+
+let config
+
+if (ENV.NODE_ENV === 'production') {
+    config = prodConfig;
+  } else {
+    config = devConfig;
+  }
+
 
 const ErrorHandlerMiddleware = (error, req, res, next) => {
-    req.logger = prodConfig
+    req.logger = config
     req.logger.FATAL(`${req.method} ${req.url} - ${new Date().toLocaleTimeString()} - ${error.message}`)
     switch(error.code){
         case con.EErrors.USER_INPUT_ERROR:
