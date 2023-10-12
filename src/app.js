@@ -53,7 +53,7 @@ app.set('view engine', 'handlebars');
 
 // Session Configuration
 app.use(session({
-  secret: con.SECRET_SESSION,
+  secret: ENV.SECRET_SESSION,
   resave: true,
   saveUninitialized: true,
   store: new MongoStore({

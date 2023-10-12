@@ -7,6 +7,7 @@ import { SECRET } from './jwt.js'
 import cookieExtractor from "../../utils/cookieJWT.js";
 import { generateToken } from "./jwt.js";
 import * as userServices from '../services/usersServices.js'
+import ENV from './loadENV.js'
 
 const JWTStrategy = jwt.Strategy
 
@@ -55,11 +56,10 @@ const InitLocalStrategy = () => {
     ))
 
     passport.use('github', new GithubStrategy( {
-        clientID: con.CLIENT_ID_GITHUB,
-        clientSecret: con.GITHUB_KEY,
-        callbackURL: con.CALLBACK_URL_GITHUB
+        clientID: ENV.CLIENT_ID_GITHUB,
+        clientSecret: ENV.GITHUB_KEY,
+        callbackURL: ENV.CALLBACK_URL_GITHUB
     }, async (accessToken, refreshToken, profile, done) => {
-        console.log(profile)
         const username = profile._json.username
         const user = await userServices.getUserByUsername(username)
 
