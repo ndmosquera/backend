@@ -15,7 +15,7 @@ if (ENV.NODE_ENV === 'production') {
 const loggerRouter = Router();
 
 
-loggerRouter.get('/api/test-loggers', (req, res) => {
+loggerRouter.get('/loggers', (req, res) => {
     req.logger = config
 
     req.logger.HTTP(`Prueba logger HTTP ENV: ${ENV.NODE_ENV}`)
