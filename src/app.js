@@ -6,7 +6,7 @@ import __dirname from "./dirname.js";
 import productViewsRouter from "./routes/productViewRouter.js";
 import userViewRouter from "./routes/userViewRouter.js";
 import { Server as SocketServer } from "socket.io";
-import { Server as HTTPServer } from 'http'
+import { Server as HTTPServer, request } from 'http'
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser"
@@ -25,14 +25,15 @@ import MessagesManager from "./services/msnManager.js";
 import cartViewRouter from "./routes/cartViewRouter.js";
 import mocksRouter from "./routes/mocksRouter.js";
 import ErrorHandlerMiddleware from "../utils/error.middleware.js";
+import winston from '../utils/winston.js'
 
 // Config Environments Variables
 const program = new Command();
-program.option('--mode <mode>', 'mode of execution', 'local')
+program.option('--mode <mode>', 'mode of execution', 'dev')
 program.parse();
 const options = program.opts();
 dotenv.config({
-    path: options.mode == 'production' ? './.env.production' : './.env'
+    path: options.mode == 'production' ? './.env.production' : './.env.dev'
 })
 
 
@@ -46,6 +47,7 @@ app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.json());
+app.use(winston)
 
 // WebSocket Middleware
 app.use((req, res, next) => {
@@ -90,16 +92,16 @@ app.use('/api/auth', authRouter)
 app.use('/api/mocks', mocksRouter)
 // app.use('/api/session', sessionRouter)
 
+app.get('/api/test', (req,res) =>{
+  let hola = tema
+  return res.status(200).json({
+    message: "logger HTTP",
+    response: true
+  })
+})
 // Error Handler Middleware
 app.use(ErrorHandlerMiddleware)
 
-// Middleware that redirects to login
-app.use((req, res, next) => {
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
-  next();
-});
 
 const messagesManager = new MessagesManager()
 
