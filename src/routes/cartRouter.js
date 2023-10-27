@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import * as con from '../../utils/GlobalConstants.mjs'
+import * as con from '../utils/GlobalConstants.mjs'
 import * as cartController from '../controllers/cartController.js'
 import { isUSER, protectView } from '../../utils/secure.js';
 

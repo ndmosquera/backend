@@ -3,7 +3,7 @@ import passport from 'passport';
 import * as userServices from '../services/usersServices.js'
 import * as productServices from '../services/productServices.js'
 import * as cartServices from '../services/cartServices.js'
-import * as con from '../../utils/GlobalConstants.mjs'
+import * as con from '../utils/GlobalConstants.mjs'
 
 
 // const userManager = new UserManager()

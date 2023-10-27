@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as con from '../../utils/GlobalConstants.mjs'
+import * as con from '../utils/GlobalConstants.mjs'
 import passport from "passport";
 
 const authRouter = Router()

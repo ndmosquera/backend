@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import * as con from '../../utils/GlobalConstants.mjs'
+import * as con from '../utils/GlobalConstants.mjs'
 import { isLogged, protectView } from '../../utils/secure.js';
 import passport from 'passport';
 import * as userServices from '../services/usersServices.js';

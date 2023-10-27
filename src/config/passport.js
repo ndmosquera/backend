@@ -1,104 +1,46 @@
-import passport from "passport";
-import local from 'passport-local'
-import * as con from '../../utils/GlobalConstants.mjs'
-import GithubStrategy from "passport-github2"
+import passport from 'passport';
+import { Strategy as LocalStrategy } from 'passport-local';
+import ENV from './env.js'
+import { validateUser } from '../utils/usersFunctions.js';
+import { generateToken } from '../utils/authFuctions.js';
+import * as con from '../utils/GlobalConstants.mjs'
+import UsersService from '../services/usersServices.js';
 import jwt from 'passport-jwt'
-import { SECRET } from './jwt.js'
-import cookieExtractor from "../../utils/cookieJWT.js";
-import { generateToken } from "./jwt.js";
-import * as userServices from '../services/usersServices.js'
-import ENV from './loadENV.js'
 
+const usersService = new UsersService()
 const JWTStrategy = jwt.Strategy
 
-const InitLocalStrategy = () => {
-    // Register
-    passport.use('register', new local.Strategy( {passReqToCallback: true}, 
-        async(req, username, password, done) =>{
-            const newUser = req.body;
-            const userExist = await userServices.getUserByUsername(username);
+passport.use('login',
+  new LocalStrategy({passReqToCallback: true},
+    async (req, param, param1, done) => {
+      const { username, password } = req.body
+      const user = await validateUser(username, password);
+      if (!user) return done('');
+      
+      const token = generateToken({sub: user});
+      user.token = token
+            
+      req.res.cookie("accessToken", token, {
+        maxAge: 24 * 60 * 60 * 1000,
+        httpOnly: true
+    });
+    return done(null, user)
+  })
+);
 
-            if (userExist) return done('This user already exists');
-
-            const user = await userServices.createUser(newUser);
-
-            const token = generateToken({
-                sub: user,
-                user: user
-            });
-            req.res.cookie("accessToken", token, {
-                maxAge: 24 * 60 * 60 * 1000,
-                httpOnly: true
-            });
-
-            return done(null, user)
-        }
-    ))
-
-    // Login
-    passport.use('login', new local.Strategy( {passReqToCallback: true}, 
-        async(req, username, password, done) =>{
-
-            const user = await userServices.validateUser(username, password);
-            if (!user) return done('');
-
-            const token = generateToken({
-                sub: user,
-                user: user
-            });
-            req.res.cookie("accessToken", token, {
-                maxAge: 24 * 60 * 60 * 1000,
-                httpOnly: true
-            });
-
-            return done(null, user)
-        }
-    ))
-
-    passport.use('github', new GithubStrategy( {
-        clientID: ENV.CLIENT_ID_GITHUB,
-        clientSecret: ENV.GITHUB_KEY,
-        callbackURL: ENV.CALLBACK_URL_GITHUB
-    }, async (accessToken, refreshToken, profile, done) => {
-        const username = profile._json.username
-        const user = await userServices.getUserByUsername(username)
-
-        if(user) return done(null, user)
-
-        const newUser = await userServices.createUser({
-            [con.FIRST_NAME]: profile._json.name.split(" ")[0],
-            [con.LAST_NAME]: profile._json.name.split(" ")[1],
-            username,
-            [con.EMAIL]: profile._json.email,
-            [con.PASSWORD]: "",
-        });
-
-        done(null, newUser);
-
-    }))
+// passport.use('current', new JWTStrategy({
+  
+// }))
 
 
-    passport.use('current', new JWTStrategy({
-        jwtFromRequest: jwt.ExtractJwt.fromExtractors([cookieExtractor]),
-        secretOrKey: SECRET
-    }, async (payload, done) => {
-        const user = await userServices.getUserById(payload.sub)
+passport.serializeUser((user, done) => {
+  done(null, user[con.ID]);
+});
 
-        if(!user) return done('Wrong credentials')
+passport.deserializeUser( async(id, done) => {
+  const user = await usersService.read({[con.ID] : id})
+  done(null, user);
+});
 
-        return done(null, user[con.ID]);
 
-    }))
-
-    passport.serializeUser((user, done) => {
-        done(null, user[con.ID])
-    })
-
-    passport.deserializeUser(async (id, done) => {
-        const user = await userServices.getUserById(id);
-        done(null, user);
-    })
-
-}
-
-export default InitLocalStrategy;
+export { passport };

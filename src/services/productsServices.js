@@ -1,49 +1,14 @@
 import * as con from '../utils/GlobalConstants.mjs';
-import UsersRepository from '../repositories/usersRepository.js';
-import bcrypt from 'bcrypt'
+import ProductsRepository from '../repositories/productsRepository.js';
 
-export default class UsersService {
+
+export default class ProductsService {
     constructor() {
-        this.repository = new UsersRepository()
+        this.repository = new ProductsRepository()
     }
-
     create = async (data) => {
         try {
-
-            // VALIDATIONS
-
-            // Required Fields
-            if (!data[con.FIRST_NAME] || !data[con.LAST_NAME] || !data[con.USERNAME] || !data[con.PASSWORD]) {
-                return {
-                  [con.MSG]: `Missing required fields: ${con.FIRST_NAME}, ${con.LAST_NAME}, ${con.USERNAME}, and ${con.PASSWORD}`,
-                  [con.DATA]: null,
-                  [con.STATUS]: con.ERROR,
-                };
-              }
-
-              // Role Field
-              if (con.ROLE in data) {
-                return {
-                  [con.MSG]: `The "${con.ROLE}" field is not allowed`,
-                  [con.DATA]: null,
-                  [con.STATUS]: con.ERROR,
-                };
-              }
-
-              // User exist
-              const userExist = await this.read({[con.USERNAME]: data[con.USERNAME]})
-              if(userExist[con.STATUS] === con.OK){
-                return {
-                    [con.MSG]: 'This user already exists',
-                    [con.DATA]: null,
-                    [con.STATUS]: con.ERROR,
-                  };
-              }
-
-              // Password encrypt
-              const salt = await bcrypt.genSalt(10)
-              data[con.PASSWORD] =  await bcrypt.hash(data[con.PASSWORD], salt)
-
+            data[con.STATUS] = data.hasOwnProperty(con.STATUS) ? data[con.STATUS] : true;
 
             let response = await this.repository.create(data)
             return response
@@ -56,8 +21,9 @@ export default class UsersService {
         }
     }
 
-    read = async (parameter) => {
+    read = async (query) => {
         try {
+            const parameter = query ? JSON.parse(query) : undefined;
             let response = await this.repository.read(parameter)
             return response            
         } catch (error) {
@@ -68,7 +34,7 @@ export default class UsersService {
             }
         }
     }
-    
+
     update = async (pid, data) => {
         try {
             let response = await this.repository.update(pid, data)
@@ -93,6 +59,5 @@ export default class UsersService {
                 [con.STATUS]: con.ERROR 
             }
         }
-
     }
 }

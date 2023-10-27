@@ -1,7 +1,7 @@
 import { Router } from "express";
 import MessagesManager from "../services/msnManager.js";
 import { isUSER } from "../../utils/secure.js";
-import * as con from '../../utils/GlobalConstants.mjs'
+import * as con from '../utils/GlobalConstants.mjs'
 
 const chatViewsRouter = Router();
 

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import prodConfig from '../config/loggers/config.dev.js';
 import devConfig from '../config/loggers/config.dev.js';
-import ENV from '../config/loadENV.js'
+import ENV from '../config/env.js'
 
 
 let config

@@ -1,20 +1,28 @@
 import jwt from "jsonwebtoken"
-import * as con from '../../utils/GlobalConstants.mjs'
-export const SECRET = "8D48D9DEBB7E6C76C296DF8BFB9F3"
+import * as con from '../utils/GlobalConstants.mjs'
+import ENV from '../config/env.js'
+const { JWT_SECRET } = ENV
 
+export const authenticateToken = (req, res, next ) => {
+    const token = req.header("Authorization")
 
-export const generateToken = (user) => 
-    jwt.sign(user, SECRET, {expiresIn:"1h"});
+    if(!token){
+        return res.status(401).send({
+            [con.MSG]: 'No authorized',
+            [con.DATA]: null,
+            [con.STATUS]: con.ERROR,
+        });
+    };
 
-
-    export const JWTCookieMW = (req, res, next) => {
-    const token = req.cookies.accessToken;
-    if(!token) return res.status(403).send({[con.STATUS]: con.ERROR, [con.MSG]: "Not Authorized"})
-
-    try {
-        const valid = jwt.verify(token, SECRET);
+    jwt.verify(token, JWT_SECRET, (error, user) => {
+        if(error){
+            return res.status(403).send({
+                [con.MSG]: 'Forbidden',
+                [con.DATA]: null,
+                [con.STATUS]: con.ERROR,
+            });
+        };
+        req.user = user;
         next();
-    } catch (e) {
-        return res.status(403).send({[con.STATUS]: con.ERROR, [con.MSG]: e})
-    }
+    });
 }
