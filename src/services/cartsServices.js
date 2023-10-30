@@ -10,10 +10,13 @@ export default class CartsService {
         this.userRepo = new UsersRepository()
     }
 
-    create = async () => {
+    create = async (uid) => {
         try{
-            let response = await this.cartRepo.create()
-            return response
+            let cartResponse = await this.cartRepo.create()
+            if (cartResponse[con.STATUS] == con.OK){
+                await this.userRepo.update(uid, {[con.CART] : cartResponse[con.DATA][con.ID]})
+            }
+            return cartResponse
         } catch (error) {
             return {
                 [con.MSG] : error.message,

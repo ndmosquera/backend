@@ -6,7 +6,8 @@ export default class CartsController {
     }
     create = async (req, res, next) => {
         try {
-            let response = await this.service.create()
+            const uid = req.body
+            let response = await this.service.create(uid)
             return res.status(201).json(response)
         } catch (error) {
             next(error)

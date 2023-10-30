@@ -7,6 +7,7 @@ export const STOCK = 'stock'
 export const CATEGORY = 'category'
 export const THUMBNAIL = 'thumbnail'
 export const ID = '_id'
+export const OWNER = 'owner'
 
 // Carts fields
 export const PRODUCTS = 'products'
@@ -24,12 +25,16 @@ export const CART = "cart"
 export const ROLE = 'role'
 export const USER = 'user'
 export const ADMIN = 'admin'
+export const PREMIUM = "premium"
 
 // Ticket fields
 export const PURCHASE_DATETIME = "purchase_datetime"
 export const AMOUNT = "amount"
 export const PURCHASER = "purchaser"
 export const PURCHASE = 'purchase'
+
+// Token fields
+export const TOKEN_TIME = 'token_time'
 
 // Generic
 export const COMPLETE = "complete"
@@ -40,6 +45,7 @@ export const PRODUCTS_PERSISTENCE = "products_persistence"
 export const CARTS_PERSISTENCE = "carts_persistence"
 export const USERS_PERSISTENCE = "users_persistence"
 export const TICKETS_PERSISTENCE = "tickets_persistence"
+export const TOKENS_PERSISTENCE = "tokens_persistence"
 
 // DATABASE
 export const DB_NAME = "ecommerce"
@@ -55,6 +61,7 @@ export const CARTS = 'carts'
 export const MESSAGES = 'messages'
 export const USERS = 'users'
 export const TICKET = 'ticket'
+export const TOKEN = 'token'
 
 // Errors enum
 export const EErrors = {

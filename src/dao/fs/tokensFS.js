@@ -3,8 +3,8 @@ import * as con from '../../utils/GlobalConstants.mjs';
 
 export default class UsersFs {
     constructor() {
-        this.users = [];
-        this.path = './src/dao/fs/data/users.json';
+        this.tokens = [];
+        this.path = './src/dao/fs/data/tokens.json';
         this.init();
     }
 
@@ -14,16 +14,16 @@ export default class UsersFs {
             fs.writeFileSync(this.path, JSON.stringify([]));
         } else {
             const fileContent = fs.readFileSync(this.path, 'utf-8');
-            this.users = JSON.parse(fileContent);
+            this.tokens = JSON.parse(fileContent);
         }
     }
 
     async create(data) {
         try {
-            this.users.push(data);
+            this.tokens.push(data);
             await this.saveToFile();
             return {
-                [con.MSG]: 'User created successfully',
+                [con.MSG]: 'Recovery Token created successfully',
                 [con.DATA]: data,
                 [con.STATUS]: con.OK,
             };
@@ -39,38 +39,38 @@ export default class UsersFs {
     read(parameter = null) {
         try {
             if (parameter) {
-                const matchingUser = this.users.find((user) => {
+                const matchingToken = this.tokens.find((token) => {
                     for (const key in parameter) {
-                      if (user[key] !== parameter[key]) {
+                      if (token[key] !== parameter[key]) {
                         return false;
                       }
                     }
                     return true;
                   });
 
-                if (matchingUser) {
+                if (matchingToken) {
                     return {
-                      [con.MSG]: 'User found successfully',
-                      [con.DATA]: matchingUser,
+                      [con.MSG]: 'Token found successfully',
+                      [con.DATA]: matchingToken,
                       [con.STATUS]: con.OK,
                     };
                   } else {
                     return {
-                      [con.MSG]: 'No user matches the provided filter criteria',
+                      [con.MSG]: 'No token matches the provided filter criteria',
                       [con.DATA]: null,
                       [con.STATUS]: con.ERROR,
                     };
                   }               
             } else {
-                if (this.users.length > 0) {
+                if (this.tokens.length > 0) {
                     return {
-                        [con.MSG]: 'Users read successfully',
-                        [con.DATA]: this.users,
+                        [con.MSG]: 'Tokens read successfully',
+                        [con.DATA]: this.tokens,
                         [con.STATUS]: con.OK,
                     };
                 } else {
                     return {
-                        [con.MSG]: 'There are no users to show',
+                        [con.MSG]: 'There are no tokens to show',
                         [con.DATA]: null,
                         [con.STATUS]: con.ERROR,
                     };
@@ -86,23 +86,22 @@ export default class UsersFs {
     }
 
 
-    async update(param, data) {
+    async update(id, data) {
         try {
-            const key = Object.keys(param)
-            let one = this.users.find((each) => each[key] == param[key]);
+            let one = this.tokens.find((each) => each[con.ID] == id);
             if (one) {
                 for (let prop in data) {
                     one[prop] = data[prop];
                 }
                 await this.saveToFile();
                 return {
-                    [con.MSG] : "User updated successfully",
+                    [con.MSG] : "Token updated successfully",
                     [con.DATA] : one,
                     [con.STATUS] : con.OK
                 };
             } else {
                 return {
-                    [con.MSG] : `There is no user with ${param}`,
+                    [con.MSG] : `There is no token with ID = ${id}`,
                     [con.DATA] : null,
                     [con.STATUS] : con.ERROR
                 };
@@ -118,18 +117,18 @@ export default class UsersFs {
 
     async destroy(id) {
         try {
-            let one = this.users.find((each) => each[con.ID] == id);
+            let one = this.tokens.find((each) => each[con.ID] == id);
             if (one) {
-              this.users = this.users.filter((each) => each[con.ID] !== id);
+              this.tokens = this.tokens.filter((each) => each[con.ID] !== id);
               await this.saveToFile();
               return {
-                  [con.MSG] : "User deleted successfully",
+                  [con.MSG] : "Token deleted successfully",
                   [con.DATA] : one,
                   [con.STATUS] : con.OK
               };
             } else {
                 return {
-                    [con.MSG]: `There is no cart with ID = ${id}`,
+                    [con.MSG]: `There is no token with ID = ${id}`,
                     [con.DATA]: null,
                     [con.STATUS]: con.ERROR,
                 };
@@ -144,7 +143,7 @@ export default class UsersFs {
     }
 
     async saveToFile() {
-        const dataJson = JSON.stringify(this.users, null, 2);
+        const dataJson = JSON.stringify(this.tokens, null, 2);
         await fs.promises.writeFile(this.path, dataJson);
     }
 }

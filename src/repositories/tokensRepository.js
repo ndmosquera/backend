@@ -1,14 +1,14 @@
-import UsersDTO from "../dao/dto/usersDTO.js";
+import TokensDTO from "../dao/dto/tokensDTO.js";
 import dao from "../dao/factory.js";
 import * as con from '../utils/GlobalConstants.mjs'
 
-export default class UsersRepository {
+export default class TokensRepository {
     constructor(){
-        this.model = new dao[con.USERS_PERSISTENCE]
+        this.model = new dao[con.TOKENS_PERSISTENCE]
     }
     create = async(data) => {
         try {
-            data = new UsersDTO(data)
+            data = new TokensDTO(data)
             let response = await this.model.create(data)
             return response
         } catch (error) {
@@ -32,9 +32,9 @@ export default class UsersRepository {
         }
     }
 
-    update = async(param, data) => {
+    update = async(id, data) => {
         try {
-            let response = await this.model.update(param, data)
+            let response = await this.model.update(id, data)
             return response            
         } catch (error) {
             return {

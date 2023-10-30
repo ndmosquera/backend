@@ -11,6 +11,7 @@ export default class UsersRouter extends GenericRouter {
         this.read('/:pid', read)
         this.update('/:pid', update)
         this.destroy('/:pid', destroy);
+        this.read('/premium/:uid', )
     }
 }
 

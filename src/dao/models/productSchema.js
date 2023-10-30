@@ -32,7 +32,11 @@ const productSchema = new mongoose.Schema({
         },
     [con.THUMBNAIL]: {
         type: String
-        }
+        },
+    [con.OWNER] : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : con.USERS,
+    }
 })
 
 productSchema.plugin(mongoosePaginate)

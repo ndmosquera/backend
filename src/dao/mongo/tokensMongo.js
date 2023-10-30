@@ -1,14 +1,14 @@
-import userModel from "../models/userSchema.js";
+import tokenModel from "../models/tokenSchema.js";
 import * as con from '../../utils/GlobalConstants.mjs'
 
-export default class UsersMongo {
+export default class TokensMongo {
     constructor(){}
 
     create = async (data) => {
         try {
-            let one = await userModel.create(data)
+            let one = await tokenModel.create(data)
             return {
-                [con.MSG] : "User created successfully",
+                [con.MSG] : "Token created successfully",
                 [con.DATA] : one,
                 [con.STATUS] : con.OK
             }
@@ -25,31 +25,31 @@ export default class UsersMongo {
     read = async (parameter = null) => {
         try {
             if(parameter){
-                const user = await userModel.findOne(parameter);
-                if (user) {
+                const token = await tokenModel.findOne(parameter);
+                if (token) {
                     return {
-                        [con.MSG]: 'User found successfully',
-                        [con.DATA]: user,
+                        [con.MSG]: 'Token found successfully',
+                        [con.DATA]: token,
                         [con.STATUS]: con.OK,
                     };
                 } else {
                     return {
-                        [con.MSG]: `There is no user with ${parameter}`,
+                        [con.MSG]: `There is no token with ${parameter}`,
                         [con.DATA]: null,
                         [con.STATUS]: con.ERROR,
                     };
                 }
             } else {
-            let all = await userModel.find();
+            let all = await tokenModel.find();
                 if(all.length > 0){
                     return {
-                        [con.MSG] : "Users read successfully",
+                        [con.MSG] : "Tokens read successfully",
                         [con.DATA] : all,
                         [con.STATUS] : con.OK
                     }
                 } else {
                     return {
-                        [con.MSG]: "There are no users to show",
+                        [con.MSG]: "There are no tokens to show",
                         [con.DATA] : null,
                         [con.STATUS] : con.ERROR
                     };
@@ -64,18 +64,18 @@ export default class UsersMongo {
         }
     }
 
-    update = async (param, data) => {
+    update = async (id, data) => {
         try {
-            let one = await userModel.findOneAndUpdate(param, data, {new : true})
+            let one = await tokenModel.findByIdAndUpdate(id, data, {new : true})
             if(one){
                 return {
-                    [con.MSG] : "User updated successfully",
+                    [con.MSG] : "Token updated successfully",
                     [con.DATA] : one,
                     [con.STATUS] : con.OK
                 }
             } else {
                 return {
-                    [con.MSG] : `There is no user with ${param}`,
+                    [con.MSG] : `There is no token with ID = ${id}`,
                     [con.DATA] : null,
                     [con.STATUS] : con.ERROR
                 };
@@ -91,16 +91,16 @@ export default class UsersMongo {
 
     destroy = async (id) => {
         try {
-            let one = await userModel.findByIdAndDelete(id)
+            let one = await tokenModel.findByIdAndDelete(id)
             if (one){
                 return {
-                    [con.MSG] : "User deleted successfully",
+                    [con.MSG] : "Token deleted successfully",
                     [con.DATA] : one,
                     [con.STATUS] : con.OK
                 }
             } else {
                 return {
-                    [con.MSG] : `There is no user with ID = ${id}`,
+                    [con.MSG] : `There is no token with ID = ${id}`,
                     [con.DATA] : null,
                     [con.STATUS] : con.ERROR
                 };

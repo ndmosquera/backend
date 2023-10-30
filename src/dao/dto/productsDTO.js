@@ -12,6 +12,7 @@ export default class ProductsDTO {
         this[con.STOCK] = obj[con.STOCK]
         this[con.CATEGORY] = obj[con.CATEGORY]
         this[con.THUMBNAIL] = obj[con.THUMBNAIL]
+        this[con.OWNER] = obj[con.OWNER]
         if(ENV.NODE_ENV === "development") {
             this[con.ID] = crypto.randomBytes(12).toString("hex")
         } else {

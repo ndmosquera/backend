@@ -18,4 +18,7 @@ export default {PORT : process.env.PORT,
                 CLIENT_ID_GITHUB : process.env.CLIENT_ID_GITHUB,
                 JWT_SECRET : process.env.JWT_SECRET,
                 LINK_DB : process.env.LINK_DB,
+                MAIL_SERVICE : process.env.MAIL_SERVICE,
+                USER_EMAIL : process.env.USER_EMAIL,
+                PASSWORD_EMAIL : process.env.USER_EMAIL,
 }

@@ -9,6 +9,8 @@ export default class CartsRepository {
 
     create = async() => {
         try {
+            data = new CartsDTO({})
+            console.log(data)
             let response = await this.model.create()
             return response
         } catch (error) {
