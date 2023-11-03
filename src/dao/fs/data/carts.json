@@ -1,5 +1,23 @@
 [
   {
-    "products": []
+    "products": [
+      {
+        "_id": "923484651bdd44eaa3aabfc3",
+        "quantity": 7
+      },
+      {
+        "_id": "41a79ac13ac76356921f17ab",
+        "quantity": 10
+      },
+      {
+        "_id": "271c5a8af6bdd771f781cf2d",
+        "quantity": 2
+      },
+      {
+        "_id": "f39ac11b9ee623c16dd6d33a",
+        "quantity": 20
+      }
+    ],
+    "_id": "9f79264a15e6fd75d8679382"
   }
 ]

@@ -5,8 +5,7 @@
     "username": "ndmosquera",
     "email": "",
     "password": "$2b$10$KT.7hTP1F2WQZmSKJjSTbuhQCZmgOPeClrhw8LxPT.EbL8X4k8xA.",
-    "role": "user",
-    "_id": "9dcf6392f66b8df3089cee75"
+    "role": "admin"
   },
   {
     "name": "Daniel",
@@ -15,6 +14,7 @@
     "email": "",
     "password": "$2b$10$k/ytYupAv6rlKAlCxtYhQ.UPNwfttvyFjSy6BBns.CrEVx852rYXu",
     "role": "user",
-    "_id": "87e3b80fb000a43cbeb0e24e"
+    "_id": "87e3b80fb000a43cbeb0e24e",
+    "cart": "9f79264a15e6fd75d8679382"
   }
 ]
