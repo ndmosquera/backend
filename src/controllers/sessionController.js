@@ -1,32 +1,32 @@
-import jwt from "jsonwebtoken"
 import UsersService from '../services/usersServices.js'
-import ENV from '../config/env.js'
-import bcrypt from 'bcrypt'
 import * as con from '../utils/GlobalConstants.mjs'
 
-export default class AuthController {
+export default class SessionController {
     constructor(){
         this.service = new UsersService()
     }
     login = async (req, res) => {
-        const user = req.user
-        delete user[con.PASSWORD]
-        res.json({
-            [con.MSG]: "Login Successfully",
-            [con.DATA]: user,
-            [con.STATUS] : con.OK
-
-
-        })}
+        try{
+            return res.status(200).cookie('token', req[con.TOKEN], { maxAge: 60 * 60 * 1000 }).json({
+                [con.MSG]: "Login Successfully",
+                [con.DATA]: req.user,
+                [con.STATUS] : con.OK
+            })
+        } catch(error){
+            error.from = "controller"
+            return next(error)
+        }
+    }
 
     register = async (req, res, next) => {
         try {
             const data = req.body;
-            const user = await this.service.create(data)
-            return res.status(201).json(user)
+            const user = await this.service.create(next, data)
+            return res.status(201).json(user[con.DATA][con.ID])
 
         } catch (error) {
-            next(error)
+            error.from = 'controller'
+            return next(error)
         }
     }
 

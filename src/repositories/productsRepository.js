@@ -6,55 +6,43 @@ export default class ProductsRepository {
     constructor(){
         this.model = new dao[con.PRODUCTS_PERSISTENCE]
     }
-    create = async(data) => {
+    create = async(next, data) => {
         try {
             data = new ProductsDTO(data)
             let response = await this.model.create(data)
             return response
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS]: con.ERROR 
-            }
+            error.from = 'repository'
+            next(error)
         }
     }
-    read = async(parameter) => {
+    read = async(next, filter, limit, page, sort) => {
         try {
-            let response = await this.model.read(parameter)
+            let response = await this.model.read(filter, limit, page, sort)
             return response
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS]: con.ERROR 
-            }
+            error.from = 'repository'
+            next(error)
         }
     }
 
-    update = async(pid, data) => {
+    update = async(next, pid, data) => {
         try {
             let response = await this.model.update(pid, data)
             return response            
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS]: con.ERROR 
-            }
+            error.from = 'repository'
+            next(error)
         }
     }
 
-    destroy = async(pid) => {
+    destroy = async(next, pid) => {
         try {
             let response = await this.model.destroy(pid)
             return response            
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS]: con.ERROR 
-            }
+            error.from = 'repository'
+            next(error)
         }
     }
 

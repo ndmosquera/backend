@@ -1,5 +1,6 @@
 import UsersService from '../services/usersServices.js'
 import * as con from '../utils/GlobalConstants.mjs'
+import CustomError from '../utils/customError.js';
 
 export default class UsersController {
     constructor(){
@@ -8,20 +9,22 @@ export default class UsersController {
     create = async (req, res, next) => {
         try {
             const data = req.body;
-            let response = await this.service.create(data)
+            let response = await this.service.create(next, data)
             return res.status(201).json(response)
         } catch (error) {
-            next(error)
+            error.from = 'controller'
+            return next(error)
         }
     }
 
     read = async (req, res, next) => {
         try {
             const { pid } = req.params;
-            let response = await this.service.read(pid)
+            let response = await this.service.read(next, pid)
             return res.status(201).json(response)
         } catch (error) {
-            next(error)
+            error.from = 'controller'
+            return next(error)
         }
     }
 
@@ -29,47 +32,45 @@ export default class UsersController {
         try {
             const { pid } = req.params; 
             const data = req.body;
-            let response = await this.service.update(pid, data)
+            let response = await this.service.update(next, pid, data)
             return res.status(201).json(response)
         } catch (error) {
-            next(error)
+            error.from = 'controller'
+            return next(error)
         }
     }
 
     destroy = async (req, res, next) => {
         try {
             const { pid } = req.params;
-            let response = await this.service.destroy(pid)
+            let response = await this.service.destroy(next, pid)
             return res.status(201).json(response)
         } catch (error) {
-            next(error)
+            error.from = 'controller'
+            return next(error)
         }
     }
 
     changePremium = async (req, res, next) => {
         try {
             pid = req.body
-            let user = await this.service.read({[con.ID]: pid})
+            let user = await this.service.read(next, {[con.ID]: pid})
             user = user[con.DATA]
             let response
             switch(user[con.ROLE]){
                 case con.USER:
-                    response = await this.service.update({[con.ID]: pid}, {[con.ROLE]: con.PREMIUM})
+                    response = await this.service.update(next, {[con.ID]: pid}, {[con.ROLE]: con.PREMIUM})
                     break
                 case con.PREMIUM:
-                    response = await this.service.update({[con.ID]: pid}, {[con.ROLE]: con.USER})
+                    response = await this.service.update(next, {[con.ID]: pid}, {[con.ROLE]: con.USER})
                   break
             default:
-                response = {
-                    [con.MSG] : "The user role is neither USER not PREMIUM",
-                    [con.DATA]: null,
-                    [con.STATUS] : con.ERROR
-                }
+                CustomError(con.ErrorDict.badRequest)
             }
-
             return res.json(response)
         } catch (error) {
-            next(error)
+            error.from = 'controller'
+            return next(error)
         }
     }
 }

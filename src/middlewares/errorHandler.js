@@ -13,10 +13,10 @@ if (ENV.NODE_ENV === 'production') {
 
 
 const ErrorHandler = (error, req, res, next) => {
-    return res.status(500).json({
+    return res.status(error.status || 500).json({
         [con.MSG] : error.message,
-        [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-        [con.STATUS] : con.ERROR
+        [con.DATA] : req.method + ":" + req.url + ":" + error.from,
+        [con.STATUS] : error.status || 500
     })
 }
 

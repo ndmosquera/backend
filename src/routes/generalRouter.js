@@ -1,9 +1,9 @@
 import GenericRouter from "./router.js";
-import CartsRouter from "./api/carts.js";
 import ProductsRouter from "./api/products.js";
+import CartsRouter from "./api/carts.js";
 import UsersRouter from "./api/users.js";
 import TicketsRouter from "./api/tickets.js";
-import AuthRouter from "./api/authentication.js";
+import SessionRouter from "./api/sessions.js";
 
 let products = new ProductsRouter()
 products = products.getRouter()
@@ -17,14 +17,14 @@ users = users.getRouter()
 let tickets = new TicketsRouter()
 tickets = tickets.getRouter()
 
-let auth = new AuthRouter()
-auth = auth.getRouter()
+let session = new SessionRouter()
+session = session.getRouter()
 
 
 export default class GeneralApiRouter extends GenericRouter {
     init() {
-        this.use('/auth', auth)
         this.use('/products', products)
+        this.use('/session', session)
         this.use('/carts', carts)
         this.use('/users', users)
         this.use('/tickets', tickets)

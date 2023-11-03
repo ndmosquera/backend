@@ -1,82 +1,57 @@
 import * as con from '../utils/GlobalConstants.mjs';
-import ProductsRepository from '../repositories/productsRepository.js';
 import CartsRepository from '../repositories/cartsRepository.js';
 import UsersRepository from '../repositories/usersRepository.js';
 
+
 export default class CartsService {
     constructor(){
-        this.productRepo = new ProductsRepository()
         this.cartRepo = new CartsRepository()
         this.userRepo = new UsersRepository()
     }
 
-    create = async (uid) => {
+    create = async (next, uid) => {
         try{
-            let cartResponse = await this.cartRepo.create()
+            let cartResponse = await this.cartRepo.create(next)
             if (cartResponse[con.STATUS] == con.OK){
-                await this.userRepo.update(uid, {[con.CART] : cartResponse[con.DATA][con.ID]})
+                await this.userRepo.update(next, uid, {[con.CART] : cartResponse[con.DATA]})
             }
             return cartResponse
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS]: con.ERROR 
-            }
+            error.from = 'service'
+            return next(error)
         }
     }
 
-    addProductToCart = async (cid, pid) => {
-        const cartResponse = await this.cartRepo.read({[con.ID] : cid})
-        const productResponse = await this.productRepo.read({[con.ID] : pid})
-        if(cartResponse[con.STATUS] == con.OK){
-            const cart = cartResponse[con.DATA]
-        }
-        if(productResponse[con.STATUS] == con.OK){
-            const product = productResponse[con.DATA]
-        }
-    }
-
-    read = async (pid) => {
+    read = async (next, cid) => {
         try {
-            let response = await this.cartRepo.read(pid)
+            let response = await this.cartRepo.read(next, cid)
             return response            
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS]: con.ERROR 
-            }
+            error.from = 'service'
+            return next(error)
         }
     }
 
-    update = async (pid, data) => {
+    update = async (next, cid, data) => {
         try {
-            let response = await this.cartRepo.update(pid, data)
-            return response            
+            let response = await this.cartRepo.update(next, cid, {[con.PRODUCTS]: data})
+            return response
+    
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS]: con.ERROR 
-            }
+            error.from = 'service'
+            return next(error)
         }
     }
 
-    destroy = async (pid) => {
+    destroy = async (next, pid) => {
         try {
-            let response = await this.cartRepo.destroy(pid)
+            let response = await this.cartRepo.destroy(next, pid)
             return response
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS]: con.ERROR 
-            }
+            error.from = 'service'
+            return next(error)
         }
-
     }
-
 
 }
 

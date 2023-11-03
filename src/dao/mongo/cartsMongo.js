@@ -1,10 +1,11 @@
 import cartModel from "../models/productSchema.js";
 import * as con from '../../utils/GlobalConstants.mjs'
+import CustomError from "../../utils/customError.js";
 
 export default class CartsMongo {
     constructor(){}
 
-    create = async() => {
+    create = async(next) => {
         try {
             let one = await cartModel.create({[con.PRODUCTS]: []})
             return {
@@ -13,15 +14,12 @@ export default class CartsMongo {
                 [con.STATUS] : con.OK
             }
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS]: con.ERROR 
-            }
+            error.from = 'mongo'
+            return next(error)
         }
     }
 
-    read = async (id = null) => {
+    read = async (next, id = null) => {
         try {
             if(id){
                 const cart = await cartModel.findById(id);
@@ -32,11 +30,7 @@ export default class CartsMongo {
                         [con.STATUS]: con.OK,
                     };
                 } else {
-                    return {
-                        [con.MSG]: `There is no cart with ID = ${id}`,
-                        [con.DATA]: null,
-                        [con.STATUS]: con.ERROR,
-                    };
+                    CustomError(con.ErrorDict.notFoundOne)
                 }
             } else {
             let all = await cartModel.find();
@@ -47,23 +41,16 @@ export default class CartsMongo {
                         [con.STATUS] : con.OK
                     }
                 } else {
-                    return {
-                        [con.MSG]: "There are no carts to show",
-                        [con.DATA] : null,
-                        [con.STATUS] : con.ERROR
-                    };
+                    CustomError(con.ErrorDict.notFound)
                 }
             }
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS] : con.ERROR
-            }
+            error.from = 'mongo'
+            return next(error)
         }
     }
 
-    update = async (id, data) => {
+    update = async (next, id, data) => {
         try {
             let one = await cartModel.findByIdAndUpdate(id, data, {new : true})
             if(one){
@@ -73,22 +60,15 @@ export default class CartsMongo {
                     [con.STATUS] : con.OK
                 }
             } else {
-                return {
-                    [con.MSG] : `There is no cart with ID = ${id}`,
-                    [con.DATA] : null,
-                    [con.STATUS] : con.ERROR
-                };
+                CustomError(con.ErrorDict.notFoundOne)
             }
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS] : con.ERROR 
-            }
+            error.from = 'mongo'
+            return next(error)
         }
     }
 
-    destroy = async (id) => {
+    destroy = async (next, id) => {
         try {
             let one = await cartModel.findByIdAndDelete(id)
             if (one){
@@ -98,18 +78,11 @@ export default class CartsMongo {
                     [con.STATUS] : con.OK
                 }
             } else {
-                return {
-                    [con.MSG] : `There is no cart with ID = ${id}`,
-                    [con.DATA] : null,
-                    [con.STATUS] : con.ERROR
-                };
+                CustomError(con.ErrorDict.notFoundOne)
             }
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS] : con.ERROR 
-            }
+            error.from = 'mongo'
+            return next(error)
         }
         
     }

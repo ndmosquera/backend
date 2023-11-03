@@ -63,12 +63,15 @@ export const USERS = 'users'
 export const TICKET = 'ticket'
 export const TOKEN = 'token'
 
-// Errors enum
-export const EErrors = {
-    ROUTING_ERROR : 1,
-    SERVICE_ERROR : 2,
-    DATABASE_ERROR : 3,
-    USER_INPUT_ERROR : 4,
-    PRODUCT_ERROR: 5,
-    AUTH_ERROR: 6
+// Errors dictionary
+export const ErrorDict = {
+    notFoundOne: { status: 404, message: 'Not found document'},
+    notFound: { status: 404, message: 'Not found documents'},
+    duplicated: { status: 404, message: 'Duplicated document'},
+    badRequest: { status: 400, message: 'Bad Request'}, 
+    incomplete: { status: 400, message: 'Incomplete values'},
+    noLogin: { status: 401, message: 'You need to be login'},
+    unauthorized: { status: 401, message: 'Unauthorized'},
+    auth: { status: 401, message: 'Wrong Credentials'},
+    forbidden: { status: 403, message: 'Not allowed'}
 }

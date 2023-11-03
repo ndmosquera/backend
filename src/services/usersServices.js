@@ -4,6 +4,7 @@ import TokensRepository from '../repositories/tokensRepository.js';
 import bcrypt from 'bcrypt'
 import nodemailer from 'nodemailer'
 import ENV from '../config/env.js'
+import CustomError from '../utils/customError.js';
 
 export default class UsersService {
     constructor() {
@@ -18,96 +19,52 @@ export default class UsersService {
           });
     }
 
-    create = async (data) => {
+    create = async (next, data) => {
         try {
+            // Password encrypt
+            const salt = await bcrypt.genSalt(10)
+            data[con.PASSWORD] =  await bcrypt.hash(data[con.PASSWORD], salt)
 
-            // VALIDATIONS
-
-            // Required Fields
-            if (!data[con.FIRST_NAME] || !data[con.LAST_NAME] || !data[con.USERNAME] || !data[con.PASSWORD]) {
-                return {
-                  [con.MSG]: `Missing required fields: ${con.FIRST_NAME}, ${con.LAST_NAME}, ${con.USERNAME}, and ${con.PASSWORD}`,
-                  [con.DATA]: null,
-                  [con.STATUS]: con.ERROR,
-                };
-              }
-
-              // Role Field
-              if (con.ROLE in data) {
-                return {
-                  [con.MSG]: `The "${con.ROLE}" field is not allowed`,
-                  [con.DATA]: null,
-                  [con.STATUS]: con.ERROR,
-                };
-              }
-
-              // User exist
-              const userExist = await this.read({[con.USERNAME]: data[con.USERNAME]})
-              if(userExist[con.STATUS] === con.OK){
-                return {
-                    [con.MSG]: 'This user already exists',
-                    [con.DATA]: null,
-                    [con.STATUS]: con.ERROR,
-                  };
-              }
-
-              // Password encrypt
-              const salt = await bcrypt.genSalt(10)
-              data[con.PASSWORD] =  await bcrypt.hash(data[con.PASSWORD], salt)
-
-
-            let response = await this.repository.create(data)
+            let response = await this.repository.create(next, data)
             return response
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS]: con.ERROR 
-            }
+            error.from = 'service'
+            return next(error)
         }
     }
 
-    read = async (parameter) => {
+    read = async (next, parameter) => {
         try {
-            let response = await this.repository.read(parameter)
+            let response = await this.repository.read(next, parameter)
             return response            
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS]: con.ERROR 
-            }
+            error.from = 'service'
+            return next(error)
         }
     }
     
-    update = async (pid, data) => {
+    update = async (next, pid, data) => {
         try {
-            let response = await this.repository.update(pid, data)
+            let response = await this.repository.update(next, pid, data)
             return response            
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS]: con.ERROR 
-            }
+            error.from = 'service'
+            return next(error)
         }
     }
     
-    destroy = async (pid) => {
+    destroy = async (next, pid) => {
         try {
-            let response = await this.repository.destroy(pid)
+            let response = await this.repository.destroy(next, pid)
             return response
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS]: con.ERROR 
-            }
+            error.from = 'service'
+            return next(error)
         }
 
     }
 
-    requestRecovery = async(email) => {
+    requestRecovery = async(next, email) => {
         try {
             const token = crypto.randomBytes(32).toString('hex');
             await this.tokenRepo.create({[con.TOKEN]: token, [con.EMAIL]: email})
@@ -121,11 +78,7 @@ export default class UsersService {
     
               this.transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
-                    return {
-                        [con.MSG] : error,
-                        [con.DATA] : null,
-                        [con.STATUS]: con.ERROR 
-                      }
+                    CustomError(con.ErrorDict.auth)
                   } else {
                     return {
                         [con.MSG] : 'Correo de recuperación enviado: ' + info.response,
@@ -135,24 +88,17 @@ export default class UsersService {
                   }
               })
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS]: con.ERROR 
-            } 
+            error.from = 'service'
+            return next(error)
         }
     }
 
-    validateRecoveryToken = async(token) => {
+    validateRecoveryToken = async(next, token) => {
         try {
             const validatedToken = await this.tokenRepo.read({[con.TOKEN]:token})
             if(validatedToken[con.STATUS] === con.ERROR || 
                 Date.now() - validatedToken[con.TOKEN_TIME] > 3600000){
-                    return {
-                        [con.MSG] :"El token ha expirado o no es válido",
-                        [con.DATA] : null,
-                        [con.STATUS]: con.ERROR 
-                    } 
+                    CustomError(con.ErrorDict.auth)
                 }else {
                     return {
                         [con.MSG] :"Token Valido",
@@ -161,11 +107,8 @@ export default class UsersService {
                     } 
                 }
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS]: con.ERROR 
-            } 
+            error.from = 'service'
+            return next(error)
         }
     }
 
@@ -179,11 +122,8 @@ export default class UsersService {
             await this.tokenRepo.destroy(id)
             return response            
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS]: con.ERROR 
-            }
+            error.from = 'service'
+            return next(error)
         }
     }
     

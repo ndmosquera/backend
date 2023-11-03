@@ -1,4 +1,5 @@
 import ProductsService from '../services/productsServices.js'
+import * as con from '../utils/GlobalConstants.mjs'
 
 export default class ProductsController {
     constructor(){
@@ -7,20 +8,23 @@ export default class ProductsController {
     create = async (req, res, next) => {
         try {
             const data = req.body;
-            let response = await this.service.create(data)
+            data[con.OWNER] = req[con.USER][con.USERNAME]
+            let response = await this.service.create(next, data)
             return res.status(201).json(response)
         } catch (error) {
-            next(error)
+            error.from = "controller"
+            return next(error)
         }
     }
 
     read = async (req, res, next) => {
         try {
-            const { query } = req.params;
-            let response = await this.service.read(query)
+            const parameters = req.query
+            let response = await this.service.read(next, parameters)
             return res.status(201).json(response)
         } catch (error) {
-            next(error)
+            error.from = "controller"
+            return next(error)
         }
     }
 
@@ -28,20 +32,22 @@ export default class ProductsController {
         try {
             const { pid } = req.params; 
             const data = req.body;
-            let response = await this.service.update(pid, data)
+            let response = await this.service.update(next, pid, data)
             return res.status(201).json(response)
         } catch (error) {
-            next(error)
+            error.from = "controller"
+            return next(error)
         }
     }
 
     destroy = async (req, res, next) => {
         try {
             const { pid } = req.params;
-            let response = await this.service.destroy(pid)
+            let response = await this.service.destroy(next, pid)
             return res.status(201).json(response)
         } catch (error) {
-            next(error)
+            error.from = "controller"
+            return next(error)
         }
     }
 }

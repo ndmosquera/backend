@@ -1,5 +1,6 @@
 import fs from'fs'
 import * as con from '../../utils/GlobalConstants.mjs'
+import CustomError from '../../utils/customError.js';
 
 export default class ProductsFs {
     constructor() {
@@ -25,7 +26,7 @@ export default class ProductsFs {
           await this.saveToFile();
           return {
             [con.MSG]: "Product created successfully",
-            [con.DATA]: data,
+            [con.DATA]: data[con.ID],
             [con.STATUS]: con.OK
           };
         } catch (error) {
@@ -35,56 +36,45 @@ export default class ProductsFs {
             [con.STATUS]: con.ERROR
           };
         }
-      }
-
-      read(parameter = null) {
-        try {
-            if (parameter) {
-                const products = this.products.filter((product) => {
-                    for (const key in parameter) {
-                      if (product[key] !== parameter[key]) {
-                        return false;
-                      }
-                    }
-                    return true;
-                });
-                if (products) {
-                    return {
-                        [con.MSG]: 'Products found successfully',
-                        [con.DATA]: products,
-                        [con.STATUS]: con.OK,
-                    };
-                } else {
-                    return {
-                        [con.MSG]: `There is no product with ID = ${id}`,
-                        [con.DATA]: null,
-                        [con.STATUS]: con.ERROR,
-                    };
-                }
-            } else {
-                if (this.products.length > 0) {
-                    return {
-                        [con.MSG]: 'Products read successfully',
-                        [con.DATA]: this.products,
-                        [con.STATUS]: con.OK,
-                    };
-                } else {
-                    return {
-                        [con.MSG]: 'There are no products to show',
-                        [con.DATA]: null,
-                        [con.STATUS]: con.ERROR,
-                    };
-                }
-            }
-        } catch (error) {
-            return {
-                [con.MSG]: error.message,
-                [con.DATA]: `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS]: con.ERROR,
-            };
-        }
     }
 
+
+    async read (filter, limit, page, sort){
+      // filter products
+      let filteredProducts = this.products.filter((product) => {
+        for (const key in filter) {
+          if (product[key] !== filter[key]) {
+            return false;
+          }
+        }
+        return true;
+      });
+      if(filteredProducts.length === 0){
+        return {
+          [con.MSG] : `There is no product with those parameters`,
+          [con.DATA] : null,
+          [con.STATUS] : con.ERROR
+      };
+      }
+      // sort filtered products
+      if (sort === 'asc') {
+        filteredProducts = filteredProducts.sort((a, b) => a[con.PRICE] - b[con.PRICE]);
+      } else if (sort === 'desc') {
+        filteredProducts = filteredProducts.sort((a, b) => b[con.PRICE] - a[con.PRICE]);
+      }
+
+      // products paginate
+      const startIndex = (page - 1) * limit;
+      const endIndex = startIndex + limit;
+      const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
+
+      return {
+        [con.MSG] : 'Products found successfully',
+        [con.DATA] : paginatedProducts,
+        [con.STATUS] : con.OK
+    };
+      ;
+    }
       
       async update(id, data) {
         try {

@@ -18,13 +18,13 @@ export default class CartsFs {
         }
     }
 
-    async create() {
+    async create(data) {
         try {
-            this.carts.push({ [con.PRODUCTS]: [] });
+            this.carts.push(data);
             await this.saveToFile();
             return {
                 [con.MSG]: 'Cart created successfully',
-                [con.DATA]: this.carts[this.carts.length - 1],
+                [con.DATA]: data[con.ID],
                 [con.STATUS]: con.OK,
             };
         } catch (error) {
@@ -36,37 +36,21 @@ export default class CartsFs {
         }
     }
 
-    read(id = null) {
+    read(cid) {
         try {
-            if (id) {
-                const cart = this.carts.find((cart) => cart[con.ID] === id);
-                if (cart) {
-                    return {
-                        [con.MSG]: 'Cart found successfully',
-                        [con.DATA]: cart,
-                        [con.STATUS]: con.OK,
-                    };
-                } else {
-                    return {
-                        [con.MSG]: `There is no cart with ID = ${id}`,
-                        [con.DATA]: null,
-                        [con.STATUS]: con.ERROR,
-                    };
-                }
+            const cart = this.carts.find((cart) => cart[con.ID] === cid);
+            if (cart) {
+                return {
+                    [con.MSG]: 'Cart found successfully',
+                    [con.DATA]: cart[con.PRODUCTS],
+                    [con.STATUS]: con.OK,
+                };
             } else {
-                if (this.carts.length > 0) {
-                    return {
-                        [con.MSG]: 'Cart read successfully',
-                        [con.DATA]: this.carts,
-                        [con.STATUS]: con.OK,
-                    };
-                } else {
-                    return {
-                        [con.MSG]: 'There are no carts to show',
-                        [con.DATA]: null,
-                        [con.STATUS]: con.ERROR,
-                    };
-                }
+                return {
+                    [con.MSG]: `There is no cart with ID = ${id}`,
+                    [con.DATA]: null,
+                    [con.STATUS]: con.ERROR,
+                };
             }
         } catch (error) {
             return {

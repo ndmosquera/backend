@@ -1,6 +1,5 @@
 import express from "express";
 import ENV from './config/env.js'
-import __dirname from "./dirname.js"; 
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser"
 import winston from './utils/winston.js'
@@ -17,7 +16,6 @@ apiRouter = apiRouter.getRouter()
 
 // Express Middleware
 const app = express();
-app.use(express.static(`${__dirname}/public`))
 app.use(express.urlencoded({extended:true}));
 app.use(cors())
 app.use(express.json());

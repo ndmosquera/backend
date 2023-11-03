@@ -1,10 +1,11 @@
 import userModel from "../models/userSchema.js";
 import * as con from '../../utils/GlobalConstants.mjs'
+import CustomError from "../../utils/customError.js";
 
 export default class UsersMongo {
     constructor(){}
 
-    create = async (data) => {
+    create = async (next, data) => {
         try {
             let one = await userModel.create(data)
             return {
@@ -13,16 +14,13 @@ export default class UsersMongo {
                 [con.STATUS] : con.OK
             }
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS]: con.ERROR 
-            }
+            error.from = 'mongo'
+            return next(error)
         }
     }
 
 
-    read = async (parameter = null) => {
+    read = async (next, parameter = null) => {
         try {
             if(parameter){
                 const user = await userModel.findOne(parameter);
@@ -33,11 +31,7 @@ export default class UsersMongo {
                         [con.STATUS]: con.OK,
                     };
                 } else {
-                    return {
-                        [con.MSG]: `There is no user with ${parameter}`,
-                        [con.DATA]: null,
-                        [con.STATUS]: con.ERROR,
-                    };
+                    CustomError(con.ErrorDict.notFoundOne)
                 }
             } else {
             let all = await userModel.find();
@@ -48,23 +42,16 @@ export default class UsersMongo {
                         [con.STATUS] : con.OK
                     }
                 } else {
-                    return {
-                        [con.MSG]: "There are no users to show",
-                        [con.DATA] : null,
-                        [con.STATUS] : con.ERROR
-                    };
+                    CustomError(con.ErrorDict.notFound)
                 }
             }
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS] : con.ERROR
-            }
+            error.from = 'mongo'
+            return next(error)
         }
     }
 
-    update = async (param, data) => {
+    update = async (next, param, data) => {
         try {
             let one = await userModel.findOneAndUpdate(param, data, {new : true})
             if(one){
@@ -74,22 +61,15 @@ export default class UsersMongo {
                     [con.STATUS] : con.OK
                 }
             } else {
-                return {
-                    [con.MSG] : `There is no user with ${param}`,
-                    [con.DATA] : null,
-                    [con.STATUS] : con.ERROR
-                };
+                CustomError(con.ErrorDict.notFoundOne)
             }
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS] : con.ERROR 
-            }
+            error.from = 'mongo'
+            return next(error)
         }
     }
 
-    destroy = async (id) => {
+    destroy = async (next, id) => {
         try {
             let one = await userModel.findByIdAndDelete(id)
             if (one){
@@ -99,18 +79,11 @@ export default class UsersMongo {
                     [con.STATUS] : con.OK
                 }
             } else {
-                return {
-                    [con.MSG] : `There is no user with ID = ${id}`,
-                    [con.DATA] : null,
-                    [con.STATUS] : con.ERROR
-                };
+                CustomError(con.ErrorDict.notFoundOne)
             }
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS] : con.ERROR 
-            }
+            error.from = 'mongo'
+            return next(error)
         }
         
     }

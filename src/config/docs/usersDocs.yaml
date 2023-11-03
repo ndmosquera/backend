@@ -1,0 +1,210 @@
+components:
+  schemas:
+    Register:
+      type: object
+      properties:
+        name:
+          type: string
+          description: User's name
+        last_name:
+          type: string
+          description: User's last name
+        username:
+          type: string
+          description: User's username
+        email:
+          type: string
+          description: User's email
+        password:
+          type: string
+          description: User's password
+      example:
+        name: Nicolas
+        last_name: Mosquera
+        username: ndmosquera
+        email: nd.mosquera@gmail.com 
+        password: 123456
+    Login:
+      type: object
+      properties:
+        username:
+          type: string
+          description: User's username
+        password:
+          type: string
+          description: User's password
+      example:
+        username: ndmosquera
+        password: 123456
+  responses:
+    register:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Request Status
+        data:
+          type: string
+          description: ID of the recently registered user.
+        message:
+          type: string
+          description: Message to describe the request result
+      example:
+        status: ok
+        data: 64fe37aaddb43596f9ae2a05
+        message: User registered successfully.
+    login:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Request Status
+        data:
+          type: null
+          description: Nothing, just to keep the structure
+        message:
+          type: string
+          description: Message to describe the request result
+      example:
+        status: ok
+        data: null
+        message: User logged successfully.
+    logout:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Request Status
+        data:
+          type: null
+          description: Nothing, just to keep the structure
+        message:
+          type: string
+          description: Message to describe the request result
+      example:
+        status: ok
+        data: null
+        message: User logged out successfully.
+    invalid:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Request Status
+        data:
+          type: string
+          description: Error Location
+        message:
+          type: string
+          description: Message to describe the request error
+      example:
+        status: error
+        data: POST /api/sessions/login middleware
+        message: Wrong credentials
+  securitySchemes: 
+    cookieAuth:
+      type: apiKey 
+      in: cookie
+      name: token
+
+
+paths:
+  /api/sessions/register:
+    post:
+      summary: Register a user.
+      tags:
+        - Sessions
+      requestBody:
+        required: true
+        description: Object with the required properties to register a user.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schema/Register'
+      responses:
+        '201':
+          description: User registered successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/register'
+        '400':
+          description: Is there any field missing for the registration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/invalid'
+        '401': 
+          description: Wrong Credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/invalid'
+        '500':
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/invalid'
+  /api/sessions/login:
+    post:
+      summary: Login with user's credentials.
+      tags:
+        - Sessions
+      requestBody:
+        required: true
+        description: Object with the required properties to login.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schema/Login'
+      responses:
+        '200':
+          description: User logged successfully.
+          headers: 
+            Set-cookie:
+              schema:
+                type: string
+                example: token=eylkxzncj45.dvjsid24cbcuidas.xcjndunc748
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/login'
+        '401': 
+          description: Wrong Credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/invalid'
+        '500':
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/invalid'
+  /api/sessions/logout:
+    post:
+      summary: Logout with save cookie.
+      tags:
+        - Sessions
+        security:
+          - cookieAuth: []
+      responses:
+        '200':
+          description: Session closed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/logout'
+        '400': 
+          description: There are no cookie.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/invalid'
+        '500':
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/invalid'

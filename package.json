@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node ./src/app.js --mode production",
-    "dev": "nodemon ./src/app.js --mode dev"
+    "dev": "nodemon ./src/app.js --mode dev", 
+    "mocha": "mocha ./src/test/mocha"
   },
   "engines": {
     "node": "16.x"

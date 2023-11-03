@@ -1,28 +1,26 @@
 import productModel from "../models/productSchema.js";
 import * as con from '../../utils/GlobalConstants.mjs'
+import CustomError from "../../utils/customError.js";
 
 export default class ProductsMongo {
     constructor(){}
 
-    create = async (data) => {
+    create = async (next,data) => {
         try {
             let one = await productModel.create(data)
             return {
                 [con.MSG] : "Product created successfully",
-                [con.DATA] : one,
+                [con.DATA] : one[con.ID],
                 [con.STATUS] : con.OK
             }
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS]: con.ERROR 
-            }
+            error.from = 'mongo'
+            return next(error)
         }
     }
 
 
-    read = async (parameter = null) => {
+    read = async (next,parameter = null) => {
         try {
             if(parameter){
                 const product = await productModel.find(parameter);
@@ -33,11 +31,7 @@ export default class ProductsMongo {
                         [con.STATUS]: con.OK,
                     };
                 } else {
-                    return {
-                        [con.MSG]: `There is no product with ${parameter}`,
-                        [con.DATA]: null,
-                        [con.STATUS]: con.ERROR,
-                    };
+                    CustomError(con.ErrorDict.notFoundOne)
                 }
             } else {
             let all = await productModel.find();
@@ -48,23 +42,16 @@ export default class ProductsMongo {
                         [con.STATUS] : con.OK
                     }
                 } else {
-                    return {
-                        [con.MSG]: "There are no products to show",
-                        [con.DATA] : null,
-                        [con.STATUS] : con.ERROR
-                    };
+                    CustomError(con.ErrorDict.notFound)
                 }
             }
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS] : con.ERROR
-            }
+            error.from = 'mongo'
+            return next(error)
         }
     }
 
-    update = async (id, data) => {
+    update = async (next,id, data) => {
         try {
             let one = await productModel.findByIdAndUpdate(id, data, {new : true})
             if(one){
@@ -74,22 +61,15 @@ export default class ProductsMongo {
                     [con.STATUS] : con.OK
                 }
             } else {
-                return {
-                    [con.MSG] : `There is no product with ID = ${id}`,
-                    [con.DATA] : null,
-                    [con.STATUS] : con.ERROR
-                };
+                CustomError(con.ErrorDict.notFoundOne)
             }
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS] : con.ERROR 
-            }
+            error.from = 'mongo'
+            return next(error)
         }
     }
 
-    destroy = async (id) => {
+    destroy = async (next,id) => {
         try {
             let one = await productModel.findByIdAndDelete(id)
             if (one){
@@ -99,18 +79,11 @@ export default class ProductsMongo {
                     [con.STATUS] : con.OK
                 }
             } else {
-                return {
-                    [con.MSG] : `There is no product with ID = ${id}`,
-                    [con.DATA] : null,
-                    [con.STATUS] : con.ERROR
-                };
+                CustomError(con.ErrorDict.notFoundOne)
             }
         } catch (error) {
-            return {
-                [con.MSG] : error.message,
-                [con.DATA] : `${error.fileName} : ${error.lineNumber}`,
-                [con.STATUS] : con.ERROR 
-            }
+            error.from = 'mongo'
+            return next(error)
         }
         
     }
