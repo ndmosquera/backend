@@ -7,7 +7,7 @@ export default class SessionController {
     }
     login = async (req, res) => {
         try{
-            return res.status(200).cookie('token', req[con.TOKEN], { maxAge: 60 * 60 * 1000 }).json({
+            return res.status(200).cookie(con.TOKEN, req[con.TOKEN], { maxAge: 60 * 60 * 1000 }).json({
                 [con.MSG]: "Login Successfully",
                 [con.DATA]: req.user,
                 [con.STATUS] : con.OK
@@ -64,6 +64,31 @@ export default class SessionController {
             
         } catch (error) {
             next(error)
+        }
+    }
+
+    logout = async (req, res) => {
+        try{
+            return res.status(200).clearCookie(con.TOKEN).json({
+                [con.MSG]: "Logout Successfully",
+                [con.DATA]: null,
+                [con.STATUS] : con.OK
+            })
+        } catch(error){
+            error.from = "controller"
+            return next(error)
+        }
+    }
+
+    changePassword = async (req, res, next) => {
+        try{
+            const user = req[con.USER]
+            const newPassword = {[con.PASSWORD] : req.body[con.PASSWORD]}
+            const response = await this.service.update(next, user[con.ID], newPassword)
+            return res.status(201).json(response)
+        } catch(error){
+            error.from = "controller"
+            return next(error)
         }
     }
 

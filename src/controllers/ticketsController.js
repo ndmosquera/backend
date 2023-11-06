@@ -1,4 +1,5 @@
 import TicketsService from '../services/ticketsServices.js'
+import * as con from '../utils/GlobalConstants.mjs'
 
 export default class TicketsController {
     constructor(){
@@ -6,8 +7,8 @@ export default class TicketsController {
     }
     create = async (req, res, next) => {
         try {
-            const data = req.body;
-            let response = await this.service.create(data)
+            const user = req[con.USER];
+            let response = await this.service.create(next, user)
             return res.status(201).json(response)
         } catch (error) {
             next(error)
@@ -16,8 +17,8 @@ export default class TicketsController {
 
     read = async (req, res, next) => {
         try {
-            const { pid } = req.params;
-            let response = await this.service.read(pid)
+            const user = req[con.USER];
+            let response = await this.service.read(next, user)
             return res.status(201).json(response)
         } catch (error) {
             next(error)
@@ -28,7 +29,7 @@ export default class TicketsController {
         try {
             const { pid } = req.params; 
             const data = req.body;
-            let response = await this.service.update(pid, data)
+            let response = await this.service.update(next, pid, data)
             return res.status(201).json(response)
         } catch (error) {
             next(error)
@@ -38,7 +39,7 @@ export default class TicketsController {
     destroy = async (req, res, next) => {
         try {
             const { pid } = req.params;
-            let response = await this.service.destroy(pid)
+            let response = await this.service.destroy(next, pid)
             return res.status(201).json(response)
         } catch (error) {
             next(error)

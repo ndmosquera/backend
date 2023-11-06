@@ -45,6 +45,9 @@ export default class UsersService {
     
     update = async (next, pid, data) => {
         try {
+            // Password encrypt
+            const salt = await bcrypt.genSalt(10)
+            data[con.PASSWORD] =  await bcrypt.hash(data[con.PASSWORD], salt)
             let response = await this.repository.update(next, pid, data)
             return response            
         } catch (error) {

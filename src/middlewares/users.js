@@ -100,4 +100,18 @@ export const isValidUsername = async (req, res, next) => {
     return next(error);
   }
 };
+
+export const isLogged = async (req, res, next) => {
+  try {
+    const user = await validateToken(req, res, next)
+    if(!user){
+      CustomError.newError(con.ErrorDict.noLogin);
+    } 
+    req[con.USER] = user
+    return next();
+  } catch (error) {
+    error.from = "middleware";
+    return next(error);
+  }
+};
  

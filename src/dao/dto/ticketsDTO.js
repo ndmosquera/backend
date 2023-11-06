@@ -9,6 +9,7 @@ export default class TicketsDTO {
         this[con.AMOUNT] = obj[con.AMOUNT]
         this[con.PURCHASER] = obj[con.PURCHASER] 
         this[con.PURCHASE] = obj[con.PURCHASE]
+        this[con.PURCHASE_DATETIME] = obj[con.PURCHASE_DATETIME]
         if(ENV.NODE_ENV === "development") {
             this[con.ID] = crypto.randomBytes(12).toString("hex")
         } else {

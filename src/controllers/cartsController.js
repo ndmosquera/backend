@@ -41,8 +41,9 @@ export default class CartsController {
 
     destroy = async (req, res, next) => {
         try {
-            const { pid } = req.params;
-            let response = await this.service.destroy(next, pid)
+            const cid = req[con.USER][con.CART]
+            const data = req[con.DATA]
+            let response = await this.service.update(next, cid, data)
             return res.status(201).json(response)
         } catch (error) {
             error.from = 'controller'

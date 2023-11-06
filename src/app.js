@@ -9,6 +9,11 @@ import notFoundHandler from "./middlewares/notFoundHandler.js";
 import GeneralApiRouter from "./routes/generalRouter.js";
 import session from "express-session";
 import passport from "passport";
+import swaggerJSDoc from "swagger-jsdoc";
+import { setup, serve } from "swagger-ui-express";
+import options from "./config/swagger.js";
+
+const specs = swaggerJSDoc(options)
 
 let apiRouter = new GeneralApiRouter()
 apiRouter = apiRouter.getRouter()
@@ -34,6 +39,7 @@ app.use(passport.session());
   
 
 // Routes
+app.use('/api/docs', serve, setup(specs))
 app.use('/api', apiRouter)
 
 // Error Handler Middleware

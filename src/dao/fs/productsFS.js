@@ -54,7 +54,7 @@ export default class ProductsFs {
           [con.MSG] : `There is no product with those parameters`,
           [con.DATA] : null,
           [con.STATUS] : con.ERROR
-      };
+        };
       }
       // sort filtered products
       if (sort === 'asc') {
@@ -67,7 +67,6 @@ export default class ProductsFs {
       const startIndex = (page - 1) * limit;
       const endIndex = startIndex + limit;
       const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
-
       return {
         [con.MSG] : 'Products found successfully',
         [con.DATA] : paginatedProducts,

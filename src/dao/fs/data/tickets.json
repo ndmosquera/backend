@@ -1,1 +1,23 @@
-[]
+[
+  {
+    "code": "lokiu5km0.q3goxwcxgn",
+    "purchase_datetime": 1699131185590,
+    "amount": 55938,
+    "purchaser": "dperdomo@gmail.com",
+    "purchase": [
+      {
+        "_id": "923484651bdd44eaa3aabfc3",
+        "quantity": 7
+      },
+      {
+        "_id": "41a79ac13ac76356921f17ab",
+        "quantity": 10
+      },
+      {
+        "_id": "271c5a8af6bdd771f781cf2d",
+        "quantity": 2
+      }
+    ],
+    "_id": "41bed8d0e0aa7dd55cebe41b"
+  }
+]

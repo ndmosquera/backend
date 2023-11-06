@@ -16,7 +16,7 @@ export default class ProductsRepository {
             next(error)
         }
     }
-    read = async(next, filter, limit, page, sort) => {
+    read = async(next, filter = {}, limit = 10, page = 1, sort = 'asc') => {
         try {
             let response = await this.model.read(filter, limit, page, sort)
             return response

@@ -11,3 +11,8 @@ export const addProductToCart = (products, pid, quantity) => {
 
       return products
 }
+
+export const deletedProductFromCart = (products, pid) => {
+  const updatedProducts = products.filter((product) => product[con.ID] !== pid)
+  return updatedProducts;
+}

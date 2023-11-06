@@ -182,29 +182,4 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/responses/invalid'
-  /api/sessions/logout:
-    post:
-      summary: Logout with save cookie.
-      tags:
-        - Sessions
-        security:
-          - cookieAuth: []
-      responses:
-        '200':
-          description: Session closed successfully.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/responses/logout'
-        '400': 
-          description: There are no cookie.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/responses/invalid'
-        '500':
-          description: Server error.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/responses/invalid'
+

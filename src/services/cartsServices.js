@@ -43,7 +43,7 @@ export default class CartsService {
         }
     }
 
-    destroy = async (next, pid) => {
+    destroy = async (next, cid, pid) => {
         try {
             let response = await this.cartRepo.destroy(next, pid)
             return response
