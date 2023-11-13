@@ -1,0 +1,106 @@
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+                description: Product's ID
+              quantity:
+                type: integer
+                description: Quantity of the product in the cart
+      example:
+        products:
+          - id: "some-product-id"
+            quantity: 2
+          - id: "another-product-id"
+            quantity: 1
+
+paths:
+  /api/carts:
+    post:
+      summary: Create a cart (common or premium user)
+      tags:
+        - Carts
+      requestBody:
+        required: true
+        description: Object with the required properties to create a cart.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cart'
+      responses:
+        '201':
+          description: Cart created successfully
+        '401':
+          description: Unauthorized
+
+    get:
+      summary: Get all paginated products from the logged-in user's cart (common or premium user)
+      tags:
+        - Carts
+      parameters:
+        - in: query
+          name: page
+          type: integer
+          description: Page number
+        - in: query
+          name: limit
+          type: integer
+          description: Maximum number of products per page
+        - in: query
+          name: sort
+          type: string
+          description: Sort order ('asc' or 'desc')
+      responses:
+        '200':
+          description: Paginated list of products in the cart
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/CartProduct'
+        '401':
+          description: Unauthorized
+
+  /api/carts/{id}:
+    put:
+      summary: Update a product in the cart (common or premium user)
+      tags:
+        - Carts
+      parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+        - in: body
+          name: body
+          description: JSON object of the updated product in the cart
+          required: true
+          schema:
+            $ref: '#/components/schemas/CartProduct'
+      responses:
+        '200':
+          description: Product in the cart updated successfully
+        '401':
+          description: Unauthorized
+
+    delete:
+      summary: Delete a product from the cart (common or premium user)
+      tags:
+        - Carts
+      parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+      responses:
+        '204':
+          description: Product in the cart deleted successfully
+        '401':
+          description: Unauthorized

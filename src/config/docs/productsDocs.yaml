@@ -1,0 +1,167 @@
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Product's title
+        description:
+          type: string
+          description: Product's description
+        code:
+          type: string
+          description: Product's code. It's unique by product
+        price:
+          type: number
+          description: Product's price
+        status:
+          type: boolean
+          description: Product's status. Shows if the product is available
+        stock:
+          type: number
+          description: Product's stock
+        category:
+          type: string
+          description: Product's category
+        thumbnail:
+          type: string
+          description: The path to thumbnail of a product
+        owner:
+          type: string
+          description: User's id of product's owner
+      example:
+        title: CINTA CELOFAN 4101  12MMX66M TRANSPARENTE
+        description: La cinta de celofán permite la fijación de elementos sobre mesas de trabajo sin que se presenten migración de adhesivo. por su respaldo de celofán permite cortarse con la mano con facilidad.
+        code: 04101-00006-02
+        price: 6096
+        status: true
+        stock: 16
+        category: Cinta
+        thumbnail: /img/04101-00006-02.png
+        owner: ndmosquera
+  responses:
+    products:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Request Status
+        data:
+          type: object
+          description: product with all fields.
+        message:
+          type: string
+          description: Message to describe the request result
+      example:
+        status: ok
+        data: 
+          title: CINTA CELOFAN 4101  12MMX66M TRANSPARENTE
+          description: La cinta de celofán permite la fijación de elementos sobre mesas de trabajo sin que se presenten migración de adhesivo. por su respaldo de celofán permite cortarse con la mano con facilidad.
+          code: 04101-00006-02
+          price: 6096
+          status: true
+          stock: 16
+          category: Cinta
+          thumbnail: /img/04101-00006-02.png
+          owner: ndmosquera
+        message: Product found successfully.
+    invalid:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Request Status
+        data:
+          type: string
+          description: Error Location
+        message:
+          type: string
+          description: Message to describe the request error
+      example:
+        status: error
+        data: POST /api/sessions/login middleware
+        message: Wrong credentials
+  securitySchemes: 
+    cookieAuth:
+      type: apiKey 
+      in: cookie
+      name: token
+
+paths:
+  /api/products:
+    post:
+      summary: Create a product
+      tags:
+        - Products
+      requestBody:
+        required: true
+        description: Object with the required properties to create a product.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '201':
+          description: Product created successfully
+        '401':
+          description: No authorized
+    get:
+      summary: Get all paginated products (includes filter queries)
+      parameters:
+        - in: query
+          name: page
+          type: integer
+          description: Page number
+        - in: query
+          name: limit
+          type: integer
+          description: Max products per page
+        - in: query
+          name: query
+          type: string
+          description: Search filter (can contain multiple keys separated by commas)
+        - in: query
+          name: sort
+          type: string
+          description: Sort order ('asc' or 'desc')
+      responses:
+        '200':
+          description: Paginated Product array
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Product'
+        '401':
+          description: No authorized
+  /api/products/{id}:
+    put:
+      summary: Update a product (admin or premium user only)
+      parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+        - in: body
+          name: body
+          description: JSON object of the updated product
+          required: true
+          schema:
+            $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: Product updated successfully
+        '401':
+          description: No authorized
+    delete:
+      summary: Delete a product (admin or premium user only)
+      parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+      responses:
+        '204':
+          description: Product deleted successfully
+        '401':
+          description: No authorized

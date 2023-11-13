@@ -1,0 +1,71 @@
+components:
+  schemas:
+    Ticket:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Ticket code (unique)
+        purchaseDatetime:
+          type: string
+          format: date-time
+          description: Date and time of the purchase
+        amount:
+          type: number
+          description: Total amount to pay
+        purchaser:
+          type: string
+          description: Purchaser's username
+        purchase:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+                description: Product's ID
+              quantity:
+                type: integer
+                description: Quantity of the product in the purchase
+      example:
+        code: "some-unique-code"
+        purchaseDatetime: "2023-11-10T12:30:00Z"
+        amount: 50.99
+        purchaser: "john_doe"
+        purchase:
+          - id: "some-product-id"
+            quantity: 2
+          - id: "another-product-id"
+            quantity: 1
+
+paths:
+  /api/tickets:
+    post:
+      summary: Create a ticket document with purchase data (common or premium user)
+      tags:
+        - Tickets
+      requestBody:
+        required: true
+        description: Object with the required properties to create a ticket.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ticket'
+      responses:
+        '201':
+          description: Ticket document created successfully
+        '401':
+          description: Unauthorized
+
+    get:
+      summary: Calculate the total amount to pay (common or premium user)
+      tags:
+        - Tickets
+      responses:
+        '200':
+          description: Total amount to pay
+          schema:
+            type: number
+        '401':
+          description: Unauthorized
