@@ -49,50 +49,50 @@ export const isAdminOrPremium = async (req, res, next) => {
       return next(error);
     }
   };
-
+  
   export const isValidUser = async (req, res, next) => {
     try{
-        const { username, password } = req.body
-        if (!username || !password){
-            CustomError.newError(con.ErrorDict.incomplete)
-        } else {
-            const user = await new UsersService().read(next, {[con.USERNAME]: username})
-            if(user[con.STATUS] === con.ERROR){
-                CustomError.newError(con.ErrorDict.auth)
-            }
-            return next()
+      const { username, password } = req.body
+      if (!username || !password){
+        CustomError.newError(con.ErrorDict.incomplete)
+      } else {
+        const user = await new UsersService().read(next, {[con.USERNAME]: username})
+        if(user[con.STATUS] === con.ERROR){
+          CustomError.newError(con.ErrorDict.auth)
         }
+        return next()
+      }
     } catch(error){
-        error.from = "middleware";
-        return next(error);
+      error.from = "middleware";
+      return next(error);
     }
-}
-
-export const isValidPassword = async (req, res, next) => {
-  try {
+  }
+  
+  export const isValidPassword = async (req, res, next) => {
+    try {
       const { username, password } = req.body
       const user = await new UsersService().read(next, {[con.USERNAME]: username})
       const isValidPassword = await passwordValidation(user[con.DATA], password)
       if(!isValidPassword){
-          CustomError.newError(con.ErrorDict.auth)
+        CustomError.newError(con.ErrorDict.auth)
       }else{
-          user[con.DATA][con.PASSWORD] = null
-          req[con.USER] = user[con.DATA]
-          return next()
+        user[con.DATA][con.PASSWORD] = null
+        req[con.USER] = user[con.DATA]
+        return next()
       }
-  } catch (error){
+    } catch (error){
       error.from = "middleware";
       return next(error);
+    }
   }
-}
-
-export const isValidUsername = async (req, res, next) => {
-  try {
-    const username = req.body[con.USERNAME]
-    const exists = await new UsersService().read(next, {[con.USERNAME] : username});
-    if (exists[con.STATUS] === con.OK) {
-      CustomError.newError(con.ErrorDict.auth);
-    } else {
+  
+  export const isValidUsername = async (req, res, next) => {
+    try {
+      const username = req.body[con.USERNAME]
+      const exists = await new UsersService().read(next, {[con.USERNAME] : username});
+      if (exists[con.STATUS] === con.OK) {
+        CustomError.newError(con.ErrorDict.auth);
+      } else {
       return next();
     }
   } catch (error) {

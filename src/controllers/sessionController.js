@@ -6,8 +6,9 @@ export default class SessionController {
         this.service = new UsersService()
     }
     login = async (req, res) => {
+        req.user[con.TOKEN] = req[con.TOKEN]
         try{
-            return res.status(200).cookie(con.TOKEN, req[con.TOKEN], { maxAge: 60 * 60 * 1000 }).json({
+            return res.status(200).json({
                 [con.MSG]: "Login Successfully",
                 [con.DATA]: req.user,
                 [con.STATUS] : con.OK
@@ -22,7 +23,11 @@ export default class SessionController {
         try {
             const data = req.body;
             const user = await this.service.create(next, data)
-            return res.status(201).json(user[con.DATA][con.ID])
+            return res.status(201).json({
+                [con.MSG]: "Register Successfully",
+                [con.DATA]: user[con.DATA],
+                [con.STATUS] : con.OK
+            })
 
         } catch (error) {
             error.from = 'controller'

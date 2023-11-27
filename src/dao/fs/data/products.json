@@ -912,16 +912,5 @@
     "status": true,
     "_id": "923484651bdd44eaa3aabfc3",
     "owner": "ndmosquera"
-  },
-  {
-    "title": "PRUEBA1",
-    "description": "PRUEBA1",
-    "code": "PRUEBA1",
-    "price": 500,
-    "status": true,
-    "stock": 6000,
-    "category": "PRUEBA1",
-    "owner": "ndmosquera",
-    "_id": "41a79ac13ac76356921f17ab"
   }
 ]

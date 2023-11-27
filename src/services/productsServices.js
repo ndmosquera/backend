@@ -21,7 +21,7 @@ export default class ProductsService {
     read = async (next, parameters) => {
         try {
             const { limit=10, page=1, query=undefined, sort='asc' } = parameters
-
+            
             const filter = {};
             if (query) {
                 const queries = query.split(",");

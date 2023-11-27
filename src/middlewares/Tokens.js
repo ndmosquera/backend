@@ -18,7 +18,7 @@ export const createToken = async (req, res, next) => {
 
 
 export const validateToken = async (req, res, next) => {
-  const token = req.cookies[con.TOKEN];
+  const token = req.headers[con.TOKEN];
 
   try {
     const decoded = jwt.verify(token, ENV.JWT_SECRET);
