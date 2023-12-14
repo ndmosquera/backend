@@ -12,7 +12,7 @@ export default class SessionRouter extends GenericRouter {
         this.create('/register', areValidUserFields, isValidUsername, register)
         this.create('/logout', isLogged, logout)
         this.update('/', isLogged, changePassword)
-        this.create('/request-recovery', requestRecovery)
+        this.update('/request-recovery', requestRecovery)
         this.read('/restore-password', validateRecoveryToken)
         this.create('/restore-password', passwordRestore)
     }

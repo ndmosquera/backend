@@ -38,7 +38,7 @@ export default class SessionController {
     requestRecovery = async(req, res, next) => {
         try {
             const data = req.body;
-            const response = await this.service.requestRecovery(data)
+            const response = await this.service.requestRecovery(next, data)
             return res.status(201).json(response)
         } catch (error) {
             next(error)

@@ -67,30 +67,15 @@ export default class UsersService {
 
     }
 
-    requestRecovery = async(next, email) => {
+    requestRecovery = async(next, data) => {
         try {
-            const token = crypto.randomBytes(32).toString('hex');
-            await this.tokenRepo.create({[con.TOKEN]: token, [con.EMAIL]: email})
-            const recoveryLink = `http://localhost:${ENV.PORT}/requestRecovery?token=${token}`
-            const mailOptions = {
-                from: ENV.USER_EMAIL,
-                to: email,
-                subject: 'Recuperación de contraseña',
-                text: `Haz clic en el siguiente enlace para restablecer tu contraseña: ${recoveryLink}`
-              };
-    
-              this.transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                    CustomError(con.ErrorDict.auth)
-                  } else {
-                    return {
-                        [con.MSG] : 'Correo de recuperación enviado: ' + info.response,
-                        [con.DATA] : null,
-                        [con.STATUS]: con.OK 
-                      }
-                  }
-              })
-        } catch (error) {
+            const salt = await bcrypt.genSalt(10)
+            const username = data[con.USERNAME]
+            const newPassword = await bcrypt.hash(data[con.PASSWORD], salt)
+
+            let response = await this.repository.updatePassword(next, username, newPassword)
+            return response
+            } catch (error) {
             error.from = 'service'
             return next(error)
         }

@@ -35,14 +35,15 @@ export default class TicketsService {
     read = async (next, user) => {
         try {
             let cart = await this.cartsRepo.read(next, user[con.CART])
-            cart = cart[con.DATA]
+            cart = cart[con.DATA]           
             const productIds = cart.map((item) => item[con.ID]);
-            
             const products = []
             for (const pid of productIds){
+                console.log("-------------",pid)
                 const product = await this.productsRepo.read(next, {[con.ID]:pid})
                 products.push(product[con.DATA][0])
             }
+
             const data = liquidateCart(user, cart, products)
 
             let response = {

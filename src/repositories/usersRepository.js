@@ -46,4 +46,14 @@ export default class UsersRepository {
         }
     }
 
+    updatePassword = async(next, username, newPassword) => {
+        try {
+            let response = await this.model.update({[con.USERNAME]: username}, {[con.PASSWORD]: newPassword})
+            return response            
+        } catch (error) {
+            error.from = 'repository'
+            return next(error)
+        }
+    }
+
 }

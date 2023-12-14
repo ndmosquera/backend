@@ -19,6 +19,7 @@ export default class TicketsController {
         try {
             const user = req[con.USER];
             let response = await this.service.read(next, user)
+            console.log(response)
             return res.status(201).json(response)
         } catch (error) {
             next(error)
