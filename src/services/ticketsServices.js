@@ -39,7 +39,6 @@ export default class TicketsService {
             const productIds = cart.map((item) => item[con.ID]);
             const products = []
             for (const pid of productIds){
-                console.log("-------------",pid)
                 const product = await this.productsRepo.read(next, {[con.ID]:pid})
                 products.push(product[con.DATA][0])
             }
