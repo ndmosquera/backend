@@ -10,7 +10,7 @@ export default class CartsMongo {
             let one = await cartModel.create({[con.PRODUCTS]: []})
             return {
                 [con.MSG] : "Cart created successfully",
-                [con.DATA] : one,
+                [con.DATA] : one.toObject(),
                 [con.STATUS] : con.OK
             }
         } catch (error) {
@@ -26,7 +26,7 @@ export default class CartsMongo {
                 if (cart) {
                     return {
                         [con.MSG]: 'Cart found successfully',
-                        [con.DATA]: cart,
+                        [con.DATA]: cart.toObject(),
                         [con.STATUS]: con.OK,
                     };
                 } else {
@@ -37,7 +37,7 @@ export default class CartsMongo {
                 if(all.length > 0){
                     return {
                         [con.MSG] : "Carts read successfully",
-                        [con.DATA] : all,
+                        [con.DATA] : all.map(item => item.toObject()),
                         [con.STATUS] : con.OK
                     }
                 } else {
@@ -56,7 +56,7 @@ export default class CartsMongo {
             if(one){
                 return {
                     [con.MSG] : "Cart updated successfully",
-                    [con.DATA] : one,
+                    [con.DATA] : one.toObject(),
                     [con.STATUS] : con.OK
                 }
             } else {
@@ -74,7 +74,7 @@ export default class CartsMongo {
             if (one){
                 return {
                     [con.MSG] : "Cart deleted successfully",
-                    [con.DATA] : one,
+                    [con.DATA] : one.toObject(),
                     [con.STATUS] : con.OK
                 }
             } else {

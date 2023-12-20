@@ -9,7 +9,7 @@ export default class UsersRepository {
     create = async(next, data) => {
         try {
             data = new UsersDTO(data)
-            let response = await this.model.create(data)
+            let response = await this.model.create(next, data)
             return response
         } catch (error) {
             error.from = 'repository'
@@ -18,7 +18,7 @@ export default class UsersRepository {
     }
     read = async(next, parameter = null) => {
         try {
-            let response = await this.model.read(parameter)
+            let response = await this.model.read(next, parameter)
             return response
         } catch (error) {
             error.from = 'repository'
@@ -28,7 +28,7 @@ export default class UsersRepository {
 
     update = async(next, uid, data) => {
         try {
-            let response = await this.model.update({[con.ID]: uid}, data)
+            let response = await this.model.update(next, {[con.ID]: uid}, data)
             return response            
         } catch (error) {
             error.from = 'repository'
@@ -38,7 +38,7 @@ export default class UsersRepository {
 
     destroy = async(next, id) => {
         try {
-            let response = await this.model.destroy(id)
+            let response = await this.model.destroy(next, id)
             return response            
         } catch (error) {
             error.from = 'repository'

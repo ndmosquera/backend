@@ -9,7 +9,7 @@ export default class TokensMongo {
             let one = await tokenModel.create(data)
             return {
                 [con.MSG] : "Token created successfully",
-                [con.DATA] : one,
+                [con.DATA] : one.toObject(),
                 [con.STATUS] : con.OK
             }
         } catch (error) {
@@ -29,7 +29,7 @@ export default class TokensMongo {
                 if (token) {
                     return {
                         [con.MSG]: 'Token found successfully',
-                        [con.DATA]: token,
+                        [con.DATA]: token.toObject(),
                         [con.STATUS]: con.OK,
                     };
                 } else {
@@ -44,7 +44,7 @@ export default class TokensMongo {
                 if(all.length > 0){
                     return {
                         [con.MSG] : "Tokens read successfully",
-                        [con.DATA] : all,
+                        [con.DATA] : all.map(item => item.toObject()),
                         [con.STATUS] : con.OK
                     }
                 } else {
@@ -70,7 +70,7 @@ export default class TokensMongo {
             if(one){
                 return {
                     [con.MSG] : "Token updated successfully",
-                    [con.DATA] : one,
+                    [con.DATA] : one.toObject(),
                     [con.STATUS] : con.OK
                 }
             } else {
@@ -95,7 +95,7 @@ export default class TokensMongo {
             if (one){
                 return {
                     [con.MSG] : "Token deleted successfully",
-                    [con.DATA] : one,
+                    [con.DATA] : one.toObject(),
                     [con.STATUS] : con.OK
                 }
             } else {

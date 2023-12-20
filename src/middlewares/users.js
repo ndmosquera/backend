@@ -90,11 +90,11 @@ export const isAdminOrPremium = async (req, res, next) => {
     try {
       const username = req.body[con.USERNAME]
       const exists = await new UsersService().read(next, {[con.USERNAME] : username});
-      if (exists[con.STATUS] === con.OK) {
+      if (exists && exists[con.STATUS] === con.OK) {
         CustomError.newError(con.ErrorDict.auth);
       } else {
-      return next();
-    }
+          return next();
+      }
   } catch (error) {
     error.from = "middleware";
     return next(error);

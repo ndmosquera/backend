@@ -9,7 +9,7 @@ export default class TicketsMongo {
             let one = await ticketModel.create(data)
             return {
                 [con.MSG] : "Ticket created successfully",
-                [con.DATA] : one,
+                [con.DATA] : one.toObject(),
                 [con.STATUS] : con.OK
             }
         } catch (error) {
@@ -29,7 +29,7 @@ export default class TicketsMongo {
                 if (ticket) {
                     return {
                         [con.MSG]: 'Ticket found successfully',
-                        [con.DATA]: ticket,
+                        [con.DATA]: ticket.toObject(),
                         [con.STATUS]: con.OK,
                     };
                 } else {
@@ -44,7 +44,7 @@ export default class TicketsMongo {
                 if(all.length > 0){
                     return {
                         [con.MSG] : "Tickets read successfully",
-                        [con.DATA] : all,
+                        [con.DATA] : all.map(item => item.toObject()),
                         [con.STATUS] : con.OK
                     }
                 } else {
@@ -70,7 +70,7 @@ export default class TicketsMongo {
             if(one){
                 return {
                     [con.MSG] : "Ticket updated successfully",
-                    [con.DATA] : one,
+                    [con.DATA] : one.toObject(),
                     [con.STATUS] : con.OK
                 }
             } else {
@@ -95,7 +95,7 @@ export default class TicketsMongo {
             if (one){
                 return {
                     [con.MSG] : "Ticket deleted successfully",
-                    [con.DATA] : one,
+                    [con.DATA] : one.toObject(),
                     [con.STATUS] : con.OK
                 }
             } else {

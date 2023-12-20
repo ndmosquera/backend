@@ -1,8 +1,9 @@
 import GenericRouter from "../router.js";
 import UsersController from "../../controllers/usersController.js"
+import { isLogged } from "../../middlewares/users.js";
 
 let controller = new UsersController();
-let { create, read, update, destroy } = controller;
+let { create, read, update, destroy, changePremium } = controller;
 
 export default class UsersRouter extends GenericRouter {
     init() {
@@ -11,7 +12,7 @@ export default class UsersRouter extends GenericRouter {
         this.read('/:pid', read)
         this.update('/:pid', update)
         this.destroy('/:pid', destroy);
-        this.read('/premium/:uid', )
+        this.create('/premium', isLogged, changePremium)
     }
 }
 

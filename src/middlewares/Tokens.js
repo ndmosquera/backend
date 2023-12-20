@@ -8,6 +8,7 @@ export const createToken = async (req, res, next) => {
     try {
       const user = req.user;
       const token = jwt.sign(user, ENV.JWT_SECRET, { expiresIn: "1h" });
+      console.log(token)
       req[con.TOKEN] = token;
       return next();
     } catch (error) {

@@ -27,7 +27,7 @@ export default class ProductsMongo {
                 if (product) {
                     return {
                         [con.MSG]: 'Products found successfully',
-                        [con.DATA]: product,
+                        [con.DATA]: product.map(item => item.toObject()),
                         [con.STATUS]: con.OK,
                     };
                 } else {
@@ -38,7 +38,7 @@ export default class ProductsMongo {
                 if(all.length > 0){
                     return {
                         [con.MSG] : "Products read successfully",
-                        [con.DATA] : all,
+                        [con.DATA] : all.map(item => item.toObject()),
                         [con.STATUS] : con.OK
                     }
                 } else {
@@ -57,7 +57,7 @@ export default class ProductsMongo {
             if(one){
                 return {
                     [con.MSG] : "Product updated successfully",
-                    [con.DATA] : one,
+                    [con.DATA] : one.toObject(),
                     [con.STATUS] : con.OK
                 }
             } else {
@@ -75,7 +75,7 @@ export default class ProductsMongo {
             if (one){
                 return {
                     [con.MSG] : "Product deleted successfully",
-                    [con.DATA] : one,
+                    [con.DATA] : one.toObject(),
                     [con.STATUS] : con.OK
                 }
             } else {

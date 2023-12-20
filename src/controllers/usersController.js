@@ -53,16 +53,14 @@ export default class UsersController {
 
     changePremium = async (req, res, next) => {
         try {
-            pid = req.body
-            let user = await this.service.read(next, {[con.ID]: pid})
-            user = user[con.DATA]
+            let user = req[con.USER]
             let response
             switch(user[con.ROLE]){
                 case con.USER:
-                    response = await this.service.update(next, {[con.ID]: pid}, {[con.ROLE]: con.PREMIUM})
+                    response = await this.service.updateRole(next, user[con.ID], {[con.ROLE]: con.PREMIUM})
                     break
                 case con.PREMIUM:
-                    response = await this.service.update(next, {[con.ID]: pid}, {[con.ROLE]: con.USER})
+                    response = await this.service.updateRole(next, {[con.ID]: pid}, {[con.ROLE]: con.USER})
                   break
             default:
                 CustomError(con.ErrorDict.badRequest)

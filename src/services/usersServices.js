@@ -114,5 +114,15 @@ export default class UsersService {
             return next(error)
         }
     }
+
+    updateRole = async(next, id, role) => {
+        try{
+            let response = await this.repository.update(next, id, role)
+            return response
+        }catch (error){
+            error.from = 'service'
+            return next(error)
+        }
+    }
     
 }

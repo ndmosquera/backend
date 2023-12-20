@@ -10,7 +10,7 @@ export default class UsersMongo {
             let one = await userModel.create(data)
             return {
                 [con.MSG] : "User created successfully",
-                [con.DATA] : one,
+                [con.DATA] : one.toObject(),
                 [con.STATUS] : con.OK
             }
         } catch (error) {
@@ -27,7 +27,7 @@ export default class UsersMongo {
                 if (user) {
                     return {
                         [con.MSG]: 'User found successfully',
-                        [con.DATA]: user,
+                        [con.DATA]: user.toObject(),
                         [con.STATUS]: con.OK,
                     };
                 } else {
@@ -38,7 +38,7 @@ export default class UsersMongo {
                 if(all.length > 0){
                     return {
                         [con.MSG] : "Users read successfully",
-                        [con.DATA] : all,
+                        [con.DATA] : all.map(item => item.toObject()),
                         [con.STATUS] : con.OK
                     }
                 } else {
@@ -57,7 +57,7 @@ export default class UsersMongo {
             if(one){
                 return {
                     [con.MSG] : "User updated successfully",
-                    [con.DATA] : one,
+                    [con.DATA] : one.toObject(),
                     [con.STATUS] : con.OK
                 }
             } else {
@@ -75,7 +75,7 @@ export default class UsersMongo {
             if (one){
                 return {
                     [con.MSG] : "User deleted successfully",
-                    [con.DATA] : one,
+                    [con.DATA] : one.toObject(),
                     [con.STATUS] : con.OK
                 }
             } else {
